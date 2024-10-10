@@ -1,4 +1,4 @@
-### 1. 유저 대기열 토큰 발급 API (미완성)
+### 1. 대기열 토큰 발급 API
 
 대기열에서 사용할 토큰을 발급받습니다.
 
@@ -8,15 +8,15 @@
     - **Headers**
         - `Content-Type` : application/json
     - **Body**
-        
+
         ```json
         {
             "userId": 1
         }
         ```
-        
-        ### Code snippet
-        
+
+      ### Code snippet
+
         ```markdown
         curl --location 'http://localhost:8080/v1/queue/issue-token' \
         --header 'Content-Type: application/json' \
@@ -24,11 +24,11 @@
             "userId": 1
         }'
         ```
-        
+
 - Response
-    
-    ### Success Response:
-    
+
+  ### Success Response:
+
     ```json
     {
       "tokenId": 1,
@@ -36,117 +36,68 @@
       "expiredAt": "2024-10-01T10:10:00"
     }
     ```
-    
-    ### Error Response:
-    
+
+  ### Error Response:
+
     ```json
     {
         "code": 404,
         "message": "user not found"
     }
     ```
-    
 
-### 1-2. 유저 대기열 토근 조회 API (미완성)
 
-대기열 정보를 조회합니다.
-
-- Request
-    - **URL**: `/v1/queue/get-token`
-    - **HTTP Method**: `GET`
-    - **Headers**
-        - `Content-Type` : application/json
-    - **Body**
-        
-        ```json
-        {
-            "userId": 1
-        }
-        ```
-        
-        ### Code snippet
-        
-        ```markdown
-        curl --location --request GET 'http://localhost:8080/v1/queue/get-token' \
-        --header 'Content-Type: application/json' \
-        --data '{
-            "userId": 1
-        }'
-        ```
-        
-- Response
-    
-    ### Success Response:
-    
-    ```json
-    {
-      "tokenId": 1,
-      "createdAt": "2024-10-01T10:00:00",
-      "expiredAt": "2024-10-01T10:10:00"
-    }
-    ```
-    
-    ### Error Response:
-    
-    ```json
-    {
-        "code": 404,
-        "message": "user not found"
-    }
-    ```
-    
-
-### 1-3. 유저 대기열 상태 조회 API (미완성)
+### 2. 대기열 확인 API
 
 대기열 정보를 조회합니다.
 
 - Request
-    - **URL**: `/v1/queue/check`
+    - **URL**: `/v1/queue/status`
     - **HTTP Method**: `GET`
     - **Headers**
         - `Authorization` : Bearer QUEUE_TOKEN (대기열 토큰)
         - `Content-Type` : application/json
     - **Body**
-        
+
         ```json
         {
             "userId": 1
         }
         ```
-        
-        ### Code snippet
-        
-        ```markdown
-        curl --location --request GET 'http://localhost:8080/v1/queue/check' \
+
+      ### Code snippet
+
+        ```bash
+        curl --location --request GET 'http://localhost:8080/v1/queue/get-token' \
         --header 'Content-Type: application/json' \
         --header 'Authorization: ••••••' \
         --data '{
             "userId": 1
         }'
         ```
-        
+
 - Response
-    
-    ### Success Response:
-    
+
+  ### Success Response:
+
     ```json
     {
-      "queueId": 1,
-      "joinAt": "2024-10-01T10:00:00",
-      "status": "WAITING",
-      "remainingWaitListCount": 10
+        "totalInQueue": 10,
+        "currentPosition": 1,
+        "expiration": "2024-10-10T10:00:00",
+        "status": "WAITING"
     }
     ```
-    
-    ### Error Response:
-    
+
+  ### Error Response:
+
     ```json
     {
         "code": 404,
         "message": "user not found"
     }
     ```
-    
+
 
 ### 3. 콘서트 예약 가능한 날짜 조회 API
 
@@ -161,17 +112,17 @@
         - `Authorization` : Bearer QUEUE_TOKEN (대기열 토큰)
         - `Content-Type` : application/json
     - **Code snippet**
-        
-        ```markdown
+
+        ```bash
         curl --location 'http://localhost:8080/v1/concerts/123/schedules' \
         --header 'Authorization: Bearer ••••••' \
         --data ''
         ```
-        
+
 - Response
-    
-    ### Success Response:
-    
+
+  ### Success Response:
+
     ```json
     {
         "concertId": 1,
@@ -189,16 +140,16 @@
         ]
     }
     ```
-    
-    ### Error Response:
-    
+
+  ### Error Response:
+
     ```json
     {
         "code": 401,
         "message": "invalid token"
     }
     ```
-    
+
 
 ### 4. 해당 날짜의 좌석 조회 API
 
@@ -213,19 +164,19 @@
     - **Headers**
         - `Authorization` : Bearer QUEUE_TOKEN (대기열 토큰)
         - `Content-Type` : application/json
-        
-        ### Code snippet
-        
-        ```markdown
+
+      ### Code snippet
+
+        ```bash
         curl --location 'http://localhost:8080/v1/concerts/123/schedules/1/seats' \
         --header 'Authorization: ••••••' \
         --data ''
         ```
-        
+
 - Response
-    
-    ### Success Response:
-    
+
+  ### Success Response:
+
     ```json
     {
         "concertId": 123,
@@ -252,16 +203,16 @@
         ]
     }
     ```
-    
-    ### Error Response:
-    
+
+  ### Error Response:
+
     ```json
     {
         "code": 401,
         "message": "invalid token"
     }
     ```
-    
+
 
 ### 5. 좌석 예약 요청 API
 
@@ -276,7 +227,7 @@
         - `Authorization` : Bearer QUEUE_TOKEN (대기열 토큰)
         - `Content-Type` : application/json
     - **Body**
-    
+
     ```json
     {
         "userId": 1,
@@ -288,9 +239,9 @@
         ]
     }
     ```
-    
-    ### Code snippet
-    
+
+  ### Code snippet
+
     ```bash
     curl --location --request GET 'http://localhost:8080/v1/reservations' \
     --header 'Content-Type: application/json' \
@@ -305,11 +256,11 @@
         ]
     }'
     ```
-    
+
 - Response
-    
-    ### Success Response:
-    
+
+  ### Success Response:
+
     ```json
     {
         "reservationId": 1,
@@ -329,16 +280,16 @@
         "status": "PENDING"
     }
     ```
-    
-    ### Error Response:
-    
+
+  ### Error Response:
+
     ```json
     {
         "code": 401,
         "message": "invalid token"
     }
     ```
-    
+
 
 ### 6. 잔액 충전 API
 
@@ -352,15 +303,15 @@
     - **Headers**
         - `Content-Type` : application/json
     - **Body**
-    
+
     ```json
     {
         "amount": 50000
     }
     ```
-    
-    ### Code snippet
-    
+
+  ### Code snippet
+
     ```bash
     curl --location --request PATCH 'http://localhost:8080/v1/balance/1/charge' \
     --header 'Content-Type: application/json' \
@@ -368,27 +319,27 @@
         "amount": 50000
     }'
     ```
-    
+
 - Response
-    
-    ### Success Response:
-    
+
+  ### Success Response:
+
     ```json
     {
       "userId": 1,
       "currentAmount": 40000
     }
     ```
-    
-    ### Error Response:
-    
+
+  ### Error Response:
+
     ```json
     {
         "code": 404,
         "message": "user not found"
     }
     ```
-    
+
 
 ### 7. 잔액 조회 API
 
@@ -399,34 +350,34 @@
     - **HTTP Method**: `GET`
     - **Path Parameters**
         - `userId`: Long (사용자 ID)
-    
-    ### Code snippet
-    
+
+  ### Code snippet
+
     ```bash
     curl --location 'http://localhost:8080/v1/balance/1' \
     --data ''
     ```
-    
+
 - Response
-    
-    ### Success Response:
-    
+
+  ### Success Response:
+
     ```json
     {
         "userId": 1,
         "currentAmount": 40000
     }
     ```
-    
-    ### Error Response:
-    
+
+  ### Error Response:
+
     ```json
     {
         "code": 404,
         "message": "user not found"
     }
     ```
-    
+
 
 ### 8. 결제 API
 
@@ -440,14 +391,14 @@
     - **Headers**
         - `Content-Type` : application/json
     - **Body**
-        
+
         ```json
         {
             "reservationId": 1
         }
         ```
-        
-    
+
+
     ### Code snippet
     
     ```bash
@@ -457,11 +408,11 @@
         "reservationId": 1
     }'
     ```
-    
+
 - Response
-    
-    ### Success Response:
-    
+
+  ### Success Response:
+
     ```json
     {
         "paymentId": 1,
@@ -469,9 +420,9 @@
         "status": "COMPLETED"
     }
     ```
-    
-    ### Error Response:
-    
+
+  ### Error Response:
+
     ```json
     {
         "code": 404,
