@@ -3,6 +3,8 @@ package io.hhplus.javaconcerthancil.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,7 +14,10 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .components(new Components())
+                .addSecurityItem(new SecurityRequirement().addList("UUIDAuth"))
+                .components(new Components().addSecuritySchemes("UUIDAuth",
+                        new SecurityScheme().type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER).name("Authorization")))
                 .info(apiInfo());
     }
 
