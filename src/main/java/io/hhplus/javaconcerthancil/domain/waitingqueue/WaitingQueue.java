@@ -14,6 +14,8 @@ public class WaitingQueue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long userId;
+
     private String token;
 
     @Enumerated(EnumType.STRING)
@@ -22,15 +24,34 @@ public class WaitingQueue {
     private LocalDateTime enteredAt;
     private LocalDateTime expiredAt;
 
-    public WaitingQueue(final String token){
+    public WaitingQueue(final Long userId, final String token){
+        this.userId = userId;
         this.token = token;
-        this.status = QueueStatus.WAITING;
+        this.status = QueueStatus.STANDBY;
         this.enteredAt = LocalDateTime.now();
+//        this.expiredAt = LocalDateTime.now().plusMinutes(30);
     }
 
     public Long getId() {
         return id;
     }
 
+    public String getToken() {
+        return token;
+    }
+    public LocalDateTime getExpiredAt() {
+        return expiredAt;
+    }
 
+    public QueueStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(QueueStatus status) {
+        this.status = status;
+    }
+
+    public void setExpiredAt(LocalDateTime expiredAt) {
+        this.expiredAt = expiredAt;
+    }
 }
