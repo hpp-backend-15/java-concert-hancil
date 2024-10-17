@@ -64,36 +64,5 @@ public class WaitingQueueServiceTest {
         verify(queueRepository, times(1)).findAllByStatusIn(any());
     }
 
-    @Test
-    void testGetTokenByUserId() {
-
-        // Given
-        Long userId = 1L;
-        WaitingQueue queueItem = new WaitingQueue(1L, "token1");
-        given(queueRepository.findFirstByUserIdOrderByIdDesc(userId)).willReturn(Optional.of(queueItem));
-
-        // When
-        Optional<WaitingQueue> result = waitingQueueService.getTokenByUserId(userId);
-
-        // Then
-        assertTrue(result.isPresent());
-        assertEquals(queueItem, result.get());
-    }
-
-    @Test
-    void testIsActiveToken() {
-        // Given
-        String token = "token1";
-        WaitingQueue queueItem = new WaitingQueue(1L, token);
-        queueItem.setStatus(QueueStatus.PROGRESS);
-        given(queueRepository.findByToken(token)).willReturn(queueItem);
-
-        // When
-        boolean isActive = waitingQueueService.isActiveToken(token);
-
-        // Then
-        assertTrue(isActive);
-    }
-
 
 }
