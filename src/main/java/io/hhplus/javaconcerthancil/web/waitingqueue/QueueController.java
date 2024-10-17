@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-@Tag(   name        = "대기열 API",
+@Tag(   name        = "01_대기열 API",
         description = "대기열 토큰 발급 및 대기열 정보를 조회합니다.")
 @RestController
 @RequestMapping("/v1/queue")

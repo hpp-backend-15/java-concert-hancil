@@ -1,7 +1,11 @@
 package io.hhplus.javaconcerthancil.domain.concert;
 
+import io.hhplus.javaconcerthancil.domain.reservation.ReservationItem;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -21,6 +25,9 @@ public class Seat {
     private SeatStatus status;
 
     private int seatPrice;
+
+    @OneToMany(mappedBy = "seat", cascade = CascadeType.ALL)
+    private List<ReservationItem> reservationItems = new ArrayList<>(); // 예약 항목 리스트
 
     public Seat(Long id, int seatNumber, SeatStatus status, int seatPrice) {
         this.id = id;
@@ -43,5 +50,13 @@ public class Seat {
 
     public int getSeatPrice() {
         return seatPrice;
+    }
+
+    public void setConcertSchedule(ConcertSchedule concertSchedule) {
+        this.concertSchedule = concertSchedule;
+    }
+
+    public void setStatus(SeatStatus status) {
+        this.status = status;
     }
 }

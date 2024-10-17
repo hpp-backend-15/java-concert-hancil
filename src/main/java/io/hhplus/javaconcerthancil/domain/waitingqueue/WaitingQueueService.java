@@ -50,4 +50,9 @@ public class WaitingQueueService {
         queueItem.setExpiredAt(LocalDateTime.now().plusMinutes(30));
         return queueRepository.save(queueItem);
     }
+
+    public boolean isActiveToken(String token) {
+        WaitingQueue waitingQueue = queueRepository.findByToken(token);
+        return waitingQueue != null && waitingQueue.getStatus() == QueueStatus.PROGRESS;
+    }
 }

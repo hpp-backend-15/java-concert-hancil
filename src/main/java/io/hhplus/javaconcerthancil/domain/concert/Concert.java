@@ -15,7 +15,7 @@ public class Concert {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ConcertSchedule> schedules;
 
     public Concert(final Long id, final String name, final String description) {
@@ -31,5 +31,19 @@ public class Concert {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<ConcertSchedule> getSchedules() {
+        return schedules;
+    }
+
+    @Override
+    public String toString() {
+        return "Concert{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", schedules=" + schedules +
+                '}';
     }
 }

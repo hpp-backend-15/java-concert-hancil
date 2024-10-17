@@ -9,8 +9,8 @@ public record ReservationResponse(
         Long reservationId,
         Long concertId,
         Long scheduleId,
-        List<HashMap<String, Integer>> seats,
-        int totalPrice,
+        List<Long> seats,
+        long totalPrice,
         ReservationStatus status
 ) {
 }

@@ -6,6 +6,6 @@ public record ReservationRequest(
         Long userId,
         Long concertId,
         Long scheduleId,
-        List<Integer> seatIds
+        List<Long> seatIds
 ) {
 }

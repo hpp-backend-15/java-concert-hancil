@@ -22,7 +22,7 @@ public class ConcertSchedule {
     private LocalDateTime reservationAvailableAt;
     private LocalDateTime concertAt;
 
-    @OneToMany(mappedBy = "concertSchedule", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "concertSchedule", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Seat> seats;
 
 
@@ -42,5 +42,13 @@ public class ConcertSchedule {
 
     public LocalDateTime getConcertAt() {
         return concertAt;
+    }
+
+    public List<Seat> getSeats() {
+        return seats;
+    }
+
+    public void setConcert(Concert concert) {
+        this.concert = concert;
     }
 }

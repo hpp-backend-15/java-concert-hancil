@@ -37,7 +37,7 @@ public class WaitingQueueFacade {
         WaitingQueue queueItem = waitingQueueService.findByToken(token);
 
         if (queueItem == null) {
-            throw new IllegalArgumentException("Invalid token: " + token);
+            throw new IllegalArgumentException("Invalid token");
         }
 
         long waitingNumber = waitingQueueService.getWaitingNumber(queueItem.getId());

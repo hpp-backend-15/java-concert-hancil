@@ -1,10 +1,12 @@
 package io.hhplus.javaconcerthancil.domain.user;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity(name = "concert_user")
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -17,4 +19,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<BalanceHistory> balanceHistoryList;
 
+    public User(String name) {
+        this.name = name;
+        this.balance = 0;
+    }
 }

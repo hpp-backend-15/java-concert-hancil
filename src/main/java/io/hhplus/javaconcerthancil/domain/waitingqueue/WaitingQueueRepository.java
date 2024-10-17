@@ -13,5 +13,6 @@ public interface WaitingQueueRepository extends JpaRepository<WaitingQueue, Long
 
     WaitingQueue findByToken(String token);
 
+
     long countByStatusAndIdLessThan(QueueStatus queueStatus, Long queueId);
 }
