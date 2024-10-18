@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.unit.domain.waitingqueue;
+package io.hhplus.javaconcerthancil.unit.domain.concert;
 
 import io.hhplus.javaconcerthancil.domain.concert.Concert;
 import io.hhplus.javaconcerthancil.domain.concert.ConcertService;
