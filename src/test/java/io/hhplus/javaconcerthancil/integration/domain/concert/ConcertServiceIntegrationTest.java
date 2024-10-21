@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.unit.domain.concert;
+package io.hhplus.javaconcerthancil.integration.domain.concert;
 
 import io.hhplus.javaconcerthancil.domain.concert.Concert;
 import io.hhplus.javaconcerthancil.domain.concert.ConcertService;
@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ConcertServiceTest {
+public class ConcertServiceIntegrationTest {
 
     @Autowired
     private ConcertService concertService;
@@ -99,7 +99,7 @@ public class ConcertServiceTest {
         assertThat(concertSeats.get(0).getSeatPrice()).isPositive();
         assertThat(concertSeats.get(0).getStatus()).isInstanceOf(SeatStatus.class);
         //모든 콘서트의 좌석 번호를 양의 정수로 구성한다고 가정했을 때
-        assertThat(concertSeats.get(0).getSeatNumber()).isPositive();
+        assertThat(concertSeats.get(0).getSeatNumber()).isLessThanOrEqualTo(MAX_SEAT_50);
     }
 
 

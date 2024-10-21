@@ -51,4 +51,8 @@ public class ConcertSchedule {
     public void setConcert(Concert concert) {
         this.concert = concert;
     }
+
+    public void setSeats(List<Seat> seats) {
+        this.seats = seats;
+    }
 }

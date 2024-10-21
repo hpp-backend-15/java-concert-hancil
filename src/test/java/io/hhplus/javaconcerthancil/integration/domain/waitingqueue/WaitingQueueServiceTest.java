@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.unit.domain.waitingqueue;
+package io.hhplus.javaconcerthancil.integration.domain.waitingqueue;
 
 import io.hhplus.javaconcerthancil.domain.waitingqueue.*;
 import jakarta.transaction.Transactional;
