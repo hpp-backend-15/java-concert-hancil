@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.interfaces.api.v1.reservation;
+package io.hhplus.javaconcerthancil.interfaces.api.v1.reservation.response;
 
 import io.hhplus.javaconcerthancil.domain.ReservationStatus;
 

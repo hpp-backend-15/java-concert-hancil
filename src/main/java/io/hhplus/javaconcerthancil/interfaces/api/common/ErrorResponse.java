@@ -2,6 +2,7 @@ package io.hhplus.javaconcerthancil.interfaces.api.common;
 
 public record ErrorResponse(
         String code,
-        String message
+        String message,
+        Object data
 ) {
 }
