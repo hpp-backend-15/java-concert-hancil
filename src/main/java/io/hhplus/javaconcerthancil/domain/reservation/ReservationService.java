@@ -47,7 +47,8 @@ public class ReservationService {
             reservationItem.setSeat(seat);
             reservationItem.setSeatPrice(seat.getSeatPrice());
 
-            reservationItemRepository.save(reservationItem);
+            ReservationItem saveReservationItem = reservationItemRepository.save(reservationItem);
+            savedResrvation.addItem(saveReservationItem);
         }
 
         return savedResrvation;
