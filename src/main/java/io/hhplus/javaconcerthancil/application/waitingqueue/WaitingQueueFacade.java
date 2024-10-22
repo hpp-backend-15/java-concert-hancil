@@ -2,8 +2,8 @@ package io.hhplus.javaconcerthancil.application.waitingqueue;
 
 import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueue;
 import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueueService;
-import io.hhplus.javaconcerthancil.web.waitingqueue.response.IssueTokenResponse;
-import io.hhplus.javaconcerthancil.web.waitingqueue.response.QueueStatusResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.response.IssueTokenResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.response.QueueStatusResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Optional;

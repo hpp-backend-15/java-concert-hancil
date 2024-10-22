@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.web.reservation;
+package io.hhplus.javaconcerthancil.interfaces.api.v1.reservation;
 
 import java.util.List;
 

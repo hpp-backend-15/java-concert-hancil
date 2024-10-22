@@ -1,13 +1,8 @@
-package io.hhplus.javaconcerthancil.web.concert;
+package io.hhplus.javaconcerthancil.interfaces.api.v1.concert;
 
 import io.hhplus.javaconcerthancil.application.concert.ConcertFacade;
-import io.hhplus.javaconcerthancil.application.waitingqueue.WaitingQueueFacade;
-import io.hhplus.javaconcerthancil.domain.concert.Concert;
-import io.hhplus.javaconcerthancil.domain.concert.ConcertSchedule;
-import io.hhplus.javaconcerthancil.domain.concert.Seat;
-import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
-import io.hhplus.javaconcerthancil.web.concert.response.GetConcertSchedulesResponse;
-import io.hhplus.javaconcerthancil.web.concert.response.GetConcertSeatsRequest;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.concert.response.GetConcertSchedulesResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.concert.response.GetConcertSeatsRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Tag(name = "02_콘서트 API", description = "콘서트 예약, 좌석 조회 및 결제")
 @RestController

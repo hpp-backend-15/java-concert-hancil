@@ -1,10 +1,10 @@
-package io.hhplus.javaconcerthancil.web.waitingqueue;
+package io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue;
 
 import io.hhplus.javaconcerthancil.application.waitingqueue.WaitingQueueFacade;
-import io.hhplus.javaconcerthancil.web.waitingqueue.request.CreateQueueTokenRequest;
-import io.hhplus.javaconcerthancil.web.waitingqueue.request.QueueStatusRequest;
-import io.hhplus.javaconcerthancil.web.waitingqueue.response.IssueTokenResponse;
-import io.hhplus.javaconcerthancil.web.waitingqueue.response.QueueStatusResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.request.QueueStatusRequest;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.response.IssueTokenResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.response.QueueStatusResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.request.CreateQueueTokenRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

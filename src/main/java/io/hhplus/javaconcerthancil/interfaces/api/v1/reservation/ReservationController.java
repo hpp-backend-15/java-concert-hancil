@@ -1,7 +1,6 @@
-package io.hhplus.javaconcerthancil.web.reservation;
+package io.hhplus.javaconcerthancil.interfaces.api.v1.reservation;
 
 import io.hhplus.javaconcerthancil.application.reservation.ReservationFacade;
-import io.hhplus.javaconcerthancil.domain.ReservationStatus;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

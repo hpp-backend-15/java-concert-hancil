@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.web.common;
+package io.hhplus.javaconcerthancil.interfaces.api.common;
 
 public record ErrorResponse(
         String code,
