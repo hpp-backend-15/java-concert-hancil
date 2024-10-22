@@ -24,6 +24,12 @@ public class WaitingQueue {
     private LocalDateTime enteredAt;
     private LocalDateTime expiredAt;
 
+    public WaitingQueue(Long id, Long userId, String token) {
+        this.id = id;
+        this.userId = userId;
+        this.token = token;
+    }
+
     public WaitingQueue(final Long userId, final String token){
         this.userId = userId;
         this.token = token;
