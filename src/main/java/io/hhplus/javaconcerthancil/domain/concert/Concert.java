@@ -33,6 +33,10 @@ public class Concert {
         this.id = id;
     }
 
+    public void setSchedules(List<ConcertSchedule> schedules) {
+        this.schedules = schedules;
+    }
+
     public List<ConcertSchedule> getSchedules() {
         return schedules;
     }

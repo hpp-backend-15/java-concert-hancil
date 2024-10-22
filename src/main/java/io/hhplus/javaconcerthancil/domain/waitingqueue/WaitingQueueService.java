@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,10 @@ public class WaitingQueueService {
     }
 
     public Optional<WaitingQueue> getTokenByUserId(Long userId) {
-        return queueRepository.findFirstByUserIdOrderByIdDesc(userId);
+//        return queueRepository.findFirstByUserIdOrderByIdDesc(userId);
+
+        return queueRepository.findFirstByUserIdAndStatusInOrderByIdDesc(userId,
+                Arrays.asList(QueueStatus.STANDBY, QueueStatus.PROGRESS));
     }
 
     public long getWaitingNumber(Long queueId) {

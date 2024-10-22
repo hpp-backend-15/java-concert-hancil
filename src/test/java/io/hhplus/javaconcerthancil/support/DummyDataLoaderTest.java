@@ -1,6 +1,5 @@
-package io.hhplus.javaconcerthancil.integration;
+package io.hhplus.javaconcerthancil.support;
 
-import io.hhplus.javaconcerthancil.support.DummyDataLoaderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
