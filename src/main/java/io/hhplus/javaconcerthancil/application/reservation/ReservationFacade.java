@@ -6,13 +6,11 @@ import io.hhplus.javaconcerthancil.domain.reservation.Reservation;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationItem;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationService;
 import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueueService;
-import io.hhplus.javaconcerthancil.web.reservation.ReservationRequest;
-import io.hhplus.javaconcerthancil.web.reservation.ReservationResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.reservation.request.ReservationRequest;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.reservation.response.ReservationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

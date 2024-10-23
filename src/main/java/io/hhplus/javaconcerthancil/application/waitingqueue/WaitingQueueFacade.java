@@ -2,11 +2,15 @@ package io.hhplus.javaconcerthancil.application.waitingqueue;
 
 import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueue;
 import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueueService;
-import io.hhplus.javaconcerthancil.web.waitingqueue.response.IssueTokenResponse;
-import io.hhplus.javaconcerthancil.web.waitingqueue.response.QueueStatusResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.response.IssueTokenResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.response.QueueStatusResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.logging.LogLevel;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+
+import static io.hhplus.javaconcerthancil.interfaces.api.common.ErrorCode.E003;
 
 @RequiredArgsConstructor
 @Service
@@ -37,7 +41,7 @@ public class WaitingQueueFacade {
         WaitingQueue queueItem = waitingQueueService.findByToken(token);
 
         if (queueItem == null) {
-            throw new IllegalArgumentException("Invalid token");
+            throw new ApiException(E003, LogLevel.INFO, "Invalid token");
         }
 
         long waitingNumber = waitingQueueService.getWaitingNumber(queueItem.getId());

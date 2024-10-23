@@ -1,7 +1,9 @@
-package io.hhplus.javaconcerthancil.web.reservation;
+package io.hhplus.javaconcerthancil.interfaces.api.v1.reservation;
 
 import io.hhplus.javaconcerthancil.application.reservation.ReservationFacade;
-import io.hhplus.javaconcerthancil.domain.ReservationStatus;
+import io.hhplus.javaconcerthancil.interfaces.api.common.ApiResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.reservation.request.ReservationRequest;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.reservation.response.ReservationResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,7 @@ public class ReservationController {
     private final ReservationFacade reservationFacade;
 
     @PostMapping
-    public ReservationResponse reservation(
+    public ApiResponse<ReservationResponse> reservation(
             HttpServletRequest request,
             @RequestBody ReservationRequest requestBody
     ){
@@ -45,6 +47,6 @@ public class ReservationController {
 //        list.add(hm);
 //        list.add(hm2);
 
-        return reservationFacade.reserveConcert(request, requestBody);
+        return ApiResponse.success(reservationFacade.reserveConcert(request, requestBody));
     }
 }

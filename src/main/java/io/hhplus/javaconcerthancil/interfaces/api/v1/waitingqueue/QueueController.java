@@ -1,10 +1,11 @@
-package io.hhplus.javaconcerthancil.web.waitingqueue;
+package io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue;
 
 import io.hhplus.javaconcerthancil.application.waitingqueue.WaitingQueueFacade;
-import io.hhplus.javaconcerthancil.web.waitingqueue.request.CreateQueueTokenRequest;
-import io.hhplus.javaconcerthancil.web.waitingqueue.request.QueueStatusRequest;
-import io.hhplus.javaconcerthancil.web.waitingqueue.response.IssueTokenResponse;
-import io.hhplus.javaconcerthancil.web.waitingqueue.response.QueueStatusResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.common.ApiResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.request.QueueStatusRequest;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.response.IssueTokenResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.response.QueueStatusResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.waitingqueue.request.CreateQueueTokenRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,20 +25,21 @@ public class QueueController {
     private final WaitingQueueFacade queueFacade;
 
     @PostMapping("/issue-token")
-    public IssueTokenResponse createQueueToken(
+    public ApiResponse<IssueTokenResponse> createQueueToken(
             @RequestBody CreateQueueTokenRequest requestBody
     ){
-        return queueFacade.issueToken(requestBody.userId());
+        return ApiResponse.success(queueFacade.issueToken(requestBody.userId()));
+
     }
 
     @PostMapping("/status")
-    public QueueStatusResponse getQueueStatus(HttpServletRequest request,
+    public ApiResponse<QueueStatusResponse> getQueueStatus(HttpServletRequest request,
                                               @RequestBody QueueStatusRequest requestBody
     ){
         String token = request.getHeader("Authorization");
         log.info("token: {}", token);
         log.info("request: {}", requestBody);
 
-        return queueFacade.getTokenInfo(token);
+        return ApiResponse.success(queueFacade.getTokenInfo(token));
     }
 }

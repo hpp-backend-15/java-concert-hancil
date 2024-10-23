@@ -1,13 +1,9 @@
-package io.hhplus.javaconcerthancil.web.concert;
+package io.hhplus.javaconcerthancil.interfaces.api.v1.concert;
 
 import io.hhplus.javaconcerthancil.application.concert.ConcertFacade;
-import io.hhplus.javaconcerthancil.application.waitingqueue.WaitingQueueFacade;
-import io.hhplus.javaconcerthancil.domain.concert.Concert;
-import io.hhplus.javaconcerthancil.domain.concert.ConcertSchedule;
-import io.hhplus.javaconcerthancil.domain.concert.Seat;
-import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
-import io.hhplus.javaconcerthancil.web.concert.response.GetConcertSchedulesResponse;
-import io.hhplus.javaconcerthancil.web.concert.response.GetConcertSeatsRequest;
+import io.hhplus.javaconcerthancil.interfaces.api.common.ApiResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.concert.response.GetConcertSchedulesResponse;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.concert.response.GetConcertSeatsRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Tag(name = "02_콘서트 API", description = "콘서트 예약, 좌석 조회 및 결제")
 @RestController
@@ -34,19 +28,19 @@ public class ConcertController {
 
     @Operation(summary = "콘서트 예약 가능한 날짜 조회 API", description = "콘서트의 예약 가능한 날짜를 조회합니다.")
     @GetMapping("{concertId}/schedules")
-    public GetConcertSchedulesResponse getConcertSchedules(
+    public ApiResponse<GetConcertSchedulesResponse> getConcertSchedules(
             HttpServletRequest request,
             @PathVariable("concertId") Long concertId
     ) {
         log.info("token: {}", request.getHeader("Authorization"));
         log.info("concertId: {}", concertId);
 
-        return concertFacade.getConcertSchedules(request, concertId);
+        return ApiResponse.success(concertFacade.getConcertSchedules(request, concertId));
     }
 
     @Operation(summary = "해당 날짜의 좌석 조회 API", description = "주어진 콘서트와 날짜의 예약 가능 좌석 정보를 조회합니다.")
     @GetMapping("{concertId}/schedules/{scheduleId}/seats")
-    public GetConcertSeatsRequest getConcertSeats(
+    public ApiResponse<GetConcertSeatsRequest> getConcertSeats(
             HttpServletRequest request,
             @PathVariable("concertId") Long concertId,
             @PathVariable("scheduleId") Long scheduleId
@@ -54,7 +48,7 @@ public class ConcertController {
         log.info("token: {}", request.getHeader("Authorization"));
         log.info("concertId: {}", concertId);
         log.info("scheduleId: {}", scheduleId);
-        return  concertFacade.getConcertSeats(request, concertId, scheduleId);
+        return ApiResponse.success(concertFacade.getConcertSeats(request, concertId, scheduleId));
     }
 
 

@@ -1,8 +1,7 @@
-package io.hhplus.javaconcerthancil.web.reservation;
+package io.hhplus.javaconcerthancil.interfaces.api.v1.reservation.response;
 
 import io.hhplus.javaconcerthancil.domain.ReservationStatus;
 
-import java.util.HashMap;
 import java.util.List;
 
 public record ReservationResponse(
