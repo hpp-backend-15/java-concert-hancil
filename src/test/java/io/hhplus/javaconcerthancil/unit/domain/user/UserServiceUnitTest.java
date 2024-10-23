@@ -58,7 +58,7 @@ public class UserServiceUnitTest {
         given(userRepository.save(user)).willReturn(user);
 
         //when
-        User charge = userService.charge(user);
+        User charge = userService.updateBalance(user);
 
         //then
         assertThat(charge.getBalance()).isEqualTo(wantToCharge);

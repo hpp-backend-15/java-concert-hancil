@@ -16,7 +16,7 @@ public class UserService {
         return userRepository.findById(userId);
     }
 
-    public User charge(User user) {
+    public User updateBalance(User user) {
         return userRepository.save(user);
     }
 
