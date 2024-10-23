@@ -54,4 +54,14 @@ public class UserUnitTest {
                 .hasMessage(ErrorCode.E006.getMessage());
 
     }
+
+    @Test
+    void 사용자가_잔액을_사용할_때_잔액이_부족할_경우_예외_발생(){
+        // given
+        User user = new User("JHC");
+
+        assertThatThrownBy(() ->  user.subtractAmount(10_000))
+                .isInstanceOf(ApiException.class)
+                .hasMessage(ErrorCode.E005.getMessage());
+    }
 }
