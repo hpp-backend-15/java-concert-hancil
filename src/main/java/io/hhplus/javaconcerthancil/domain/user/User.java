@@ -47,6 +47,10 @@ public class User {
         this.balance -= amount;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public long getBalance() {
         return balance;
     }

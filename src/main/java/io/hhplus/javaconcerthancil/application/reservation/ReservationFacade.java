@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ReservationFacade {
 
-    private final WaitingQueueService queueService;
     private final ReservationService reservationService;
-    private final ConcertService concertService;
-
 
     public ReservationResponse reserveConcert(ReservationRequest requestBody) {
 
