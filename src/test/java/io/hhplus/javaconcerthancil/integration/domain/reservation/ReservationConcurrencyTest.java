@@ -1,6 +1,8 @@
 package io.hhplus.javaconcerthancil.integration.domain.reservation;
 
 import io.hhplus.javaconcerthancil.domain.concert.SeatRepository;
+import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
+import io.hhplus.javaconcerthancil.domain.reservation.ReservationItemRepository;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationRepository;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationService;
 import io.hhplus.javaconcerthancil.support.DummyDataLoaderService;
@@ -31,6 +33,9 @@ public class ReservationConcurrencyTest {
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @Autowired
+    private ReservationItemRepository reservationItemRepository;
 
     @BeforeEach
     void setUp() {
@@ -71,5 +76,10 @@ public class ReservationConcurrencyTest {
 
         // 예약 완료된 좌석 상태 확인
         assertThat(reservationRepository.count()).isEqualTo(1);
+        assertThat(reservationItemRepository.count()).isEqualTo(seatIds.size());
+        for(long id : seatIds){
+            assertThat(seatRepository.findById(id).get().getStatus()).isEqualTo(SeatStatus.RESERVED);
+        }
+
     }
 }
