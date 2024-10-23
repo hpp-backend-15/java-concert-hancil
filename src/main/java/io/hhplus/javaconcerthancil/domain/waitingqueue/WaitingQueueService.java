@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,16 +25,7 @@ public class WaitingQueueService {
         return queueToken;
     }
 
-    public List<WaitingQueue> getWaitingTotalInQueue() {
-
-        return queueRepository.findAllByStatusIn(
-                List.of(QueueStatus.STANDBY, QueueStatus.PROGRESS)
-                );
-    }
-
     public Optional<WaitingQueue> getTokenByUserId(Long userId) {
-//        return queueRepository.findFirstByUserIdOrderByIdDesc(userId);
-
         return queueRepository.findFirstByUserIdAndStatusInOrderByIdDesc(userId,
                 Arrays.asList(QueueStatus.STANDBY, QueueStatus.PROGRESS));
     }

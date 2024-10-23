@@ -1,6 +1,6 @@
 package io.hhplus.javaconcerthancil.interfaces.api.v1.reservation.response;
 
-import io.hhplus.javaconcerthancil.domain.ReservationStatus;
+import io.hhplus.javaconcerthancil.domain.reservation.ReservationStatus;
 
 import java.util.List;
 

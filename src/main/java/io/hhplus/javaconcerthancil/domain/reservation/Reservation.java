@@ -1,6 +1,5 @@
 package io.hhplus.javaconcerthancil.domain.reservation;
 
-import io.hhplus.javaconcerthancil.domain.ReservationStatus;
 import io.hhplus.javaconcerthancil.domain.user.User;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;

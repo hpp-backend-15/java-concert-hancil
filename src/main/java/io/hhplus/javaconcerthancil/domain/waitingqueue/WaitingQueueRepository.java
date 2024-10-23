@@ -7,13 +7,7 @@ import java.util.Optional;
 
 public interface WaitingQueueRepository extends JpaRepository<WaitingQueue, Long> {
 
-    Optional<WaitingQueue> findFirstByUserIdOrderByIdDesc(Long userId);
     Optional<WaitingQueue> findFirstByUserIdAndStatusInOrderByIdDesc(Long userId, List<QueueStatus> queueStatuses);
-
-    List<WaitingQueue> findAllByStatusIn(List<QueueStatus> statuses);
-
     WaitingQueue findByToken(String token);
-
-
     long countByStatusAndIdLessThan(QueueStatus queueStatus, Long queueId);
 }
