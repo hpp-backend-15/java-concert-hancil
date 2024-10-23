@@ -27,26 +27,9 @@ public class ReservationController {
 
     @PostMapping
     public ApiResponse<ReservationResponse> reservation(
-            HttpServletRequest request,
             @RequestBody ReservationRequest requestBody
     ){
-        log.info("token: {}", request.getHeader("Authorization"));
         log.info("requestBody: {}", requestBody);
-
-
-
-
-//        List<HashMap<String, Integer>> list = new ArrayList<>();
-//        HashMap<String, Integer> hm = new HashMap<>();
-//        HashMap<String, Integer> hm2 = new HashMap<>();
-//        hm.put("seatNumber", 10);
-//        hm.put("price", 10_000);
-//        hm2.put("seatNumber", 11);
-//        hm2.put("price", 15_000);
-//
-//        list.add(hm);
-//        list.add(hm2);
-
-        return ApiResponse.success(reservationFacade.reserveConcert(request, requestBody));
+        return ApiResponse.success(reservationFacade.reserveConcert(requestBody));
     }
 }

@@ -17,7 +17,7 @@ public class SwaggerConfig {
                 .addSecurityItem(new SecurityRequirement().addList("UUIDAuth"))
                 .components(new Components().addSecuritySchemes("UUIDAuth",
                         new SecurityScheme().type(SecurityScheme.Type.APIKEY)
-                                .in(SecurityScheme.In.HEADER).name("Authorization")))
+                                .in(SecurityScheme.In.HEADER).name("QUEUE_TOKEN")))
                 .info(apiInfo());
     }
 

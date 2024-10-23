@@ -36,7 +36,7 @@ public class QueueController {
     public ApiResponse<QueueStatusResponse> getQueueStatus(HttpServletRequest request,
                                               @RequestBody QueueStatusRequest requestBody
     ){
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader("QUEUE_TOKEN");
         log.info("token: {}", token);
         log.info("request: {}", requestBody);
 

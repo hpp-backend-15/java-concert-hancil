@@ -24,9 +24,9 @@ public class WebConfig implements WebMvcConfigurer {
         PathMatcherInterceptor interceptor = new PathMatcherInterceptor(waitingQueueInterceptor);
 
         return interceptor
-                .includePathPattern("/v1/concert**", PathMethod.GET)
+                .includePathPattern("/v1/concert/**", PathMethod.GET)
                 .includePathPattern("/v1/reservation/**", PathMethod.POST)
-                .includePathPattern("/v1/queue/**", PathMethod.POST)
+//                .includePathPattern("/v1/queue/**", PathMethod.POST)
                 .excludePathPattern("/**", PathMethod.OPTIONS)
                 ;
     }

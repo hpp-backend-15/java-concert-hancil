@@ -21,16 +21,7 @@ public class ReservationFacade {
     private final ConcertService concertService;
 
 
-    public ReservationResponse reserveConcert(HttpServletRequest request, ReservationRequest requestBody) {
-
-        //1. 토큰 만료 검증
-        String token = request.getHeader("Authorization");
-        boolean isActive = queueService.isActiveToken(token);
-
-        //2. 토큰이 없거나 비활성화된 상태면 에러
-        if (!isActive){
-            throw new IllegalArgumentException("invalid token");
-        }
+    public ReservationResponse reserveConcert(ReservationRequest requestBody) {
 
         //3. 예약저장
         Reservation reservation = reservationService.reserveConcert(
