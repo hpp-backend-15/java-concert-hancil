@@ -22,6 +22,12 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<BalanceHistory> balanceHistoryList;
 
+    public User(Long id, String name) {
+        this.id = id;
+        this.name = name;
+        this.balance = 0;
+    }
+
     public User(String name) {
         this.name = name;
         this.balance = 0;
@@ -31,8 +37,6 @@ public class User {
         if(amount <= 0){
             throw new ApiException(ErrorCode.E006, LogLevel.INFO, "amount must be positive.");
         }
-
-
         this.balance += amount;
     }
 
