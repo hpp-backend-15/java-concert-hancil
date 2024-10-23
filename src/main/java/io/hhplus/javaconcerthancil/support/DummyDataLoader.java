@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Component
+@Component
 @RequiredArgsConstructor
 public class DummyDataLoader implements CommandLineRunner {
 
@@ -26,8 +26,13 @@ public class DummyDataLoader implements CommandLineRunner {
     }
 
     private void createDummyConcertData() {
-        User user = new User("JHC");
-        userRepository.save(user);
+
+        String[] userNames = {"JHC", "MMA", "CLIMBING", "MAN"};
+
+        for(String name : userNames) {
+            User user = new User(name);
+            userRepository.save(user);
+        }
 
         // 콘서트 생성
         Concert concert = new Concert(null, "크러쉬 콘서트", "크러쉬의 라이브 콘서트입니다.");
