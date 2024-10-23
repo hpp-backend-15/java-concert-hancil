@@ -1,9 +1,6 @@
 package io.hhplus.javaconcerthancil.interfaces.api.common;
 
-
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,10 +10,8 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestControllerAdvice
-//@Slf4j
+@Slf4j
 public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     // 내가 정의한 Exception 이 발생했을 때 에러 응답
     @ExceptionHandler(ApiException.class)
@@ -35,9 +30,4 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
         log.error("UnhandledException : {}", e.getMessage(), e);
         return new ResponseEntity<>(ApiResponse.error(e.getMessage()), INTERNAL_SERVER_ERROR);
     }
-
-
-
-
-
 }
