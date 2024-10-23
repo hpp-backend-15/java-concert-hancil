@@ -29,26 +29,21 @@ public class ConcertController {
     @Operation(summary = "콘서트 예약 가능한 날짜 조회 API", description = "콘서트의 예약 가능한 날짜를 조회합니다.")
     @GetMapping("{concertId}/schedules")
     public ApiResponse<GetConcertSchedulesResponse> getConcertSchedules(
-            HttpServletRequest request,
             @PathVariable("concertId") Long concertId
     ) {
-        log.info("token: {}", request.getHeader("Authorization"));
         log.info("concertId: {}", concertId);
-
-        return ApiResponse.success(concertFacade.getConcertSchedules(request, concertId));
+        return ApiResponse.success(concertFacade.getConcertSchedules(concertId));
     }
 
     @Operation(summary = "해당 날짜의 좌석 조회 API", description = "주어진 콘서트와 날짜의 예약 가능 좌석 정보를 조회합니다.")
     @GetMapping("{concertId}/schedules/{scheduleId}/seats")
     public ApiResponse<GetConcertSeatsRequest> getConcertSeats(
-            HttpServletRequest request,
             @PathVariable("concertId") Long concertId,
             @PathVariable("scheduleId") Long scheduleId
     ) {
-        log.info("token: {}", request.getHeader("Authorization"));
         log.info("concertId: {}", concertId);
         log.info("scheduleId: {}", scheduleId);
-        return ApiResponse.success(concertFacade.getConcertSeats(request, concertId, scheduleId));
+        return ApiResponse.success(concertFacade.getConcertSeats(concertId, scheduleId));
     }
 
 

@@ -20,21 +20,7 @@ public class ConcertFacade {
     private final WaitingQueueService queueService;
     private final ConcertService concertService;
 
-    public GetConcertSchedulesResponse getConcertSchedules(HttpServletRequest request, Long concertId) {
-
-
-        /**
-         * todo: 토큰 만료 검증은 filter 혹은 interceptor에서 처리할 것
-         */
-
-        //1. 토큰 만료 검증
-        String token = request.getHeader("Authorization");
-        boolean isActive = queueService.isActiveToken(token);
-
-        //2. 토큰이 없거나 비활성화된 상태면 에러
-        if (!isActive){
-            throw new IllegalArgumentException("invalid token");
-        }
+    public GetConcertSchedulesResponse getConcertSchedules(Long concertId) {
 
         //3. 예약 가능한 콘서트 조회
         Concert scheduledConcert = concertService.getScheduledConcert(concertId);
@@ -42,16 +28,7 @@ public class ConcertFacade {
         return new GetConcertSchedulesResponse(1L, scheduledConcert.getSchedules());
     }
 
-    public GetConcertSeatsRequest getConcertSeats(HttpServletRequest request, Long concertId, Long scheduleId) {
-
-        //1. 토큰 만료 검증
-        String token = request.getHeader("Authorization");
-        boolean isActive = queueService.isActiveToken(token);
-
-        //2. 토큰이 없거나 비활성화된 상태면 에러
-        if (!isActive){
-            throw new IllegalArgumentException("invalid token");
-        }
+    public GetConcertSeatsRequest getConcertSeats(Long concertId, Long scheduleId) {
 
         List<Seat> concertSeats = concertService.getConcertSeats(concertId, scheduleId);
 
