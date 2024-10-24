@@ -6,6 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+
+    // default: 에러코드 정의
+
     E001("E001", "대기열 상태가 활성상태가 아닙니다."),
     E002("E002", "좌석이 이미 예약 되어 있습니다."),
     E003("E003", "유효하지 않은 토큰입니다."),
