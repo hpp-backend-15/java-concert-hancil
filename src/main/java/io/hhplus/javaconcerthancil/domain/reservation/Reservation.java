@@ -60,4 +60,8 @@ public class Reservation {
     public List<ReservationItem> getItems() {
         return items;
     }
+
+    public void setStatus(ReservationStatus status) {
+        this.status = status;
+    }
 }
