@@ -1,6 +1,7 @@
 package io.hhplus.javaconcerthancil.unit.domain.payments;
 
-import io.hhplus.javaconcerthancil.domain.reservation.Reservation;
+import io.hhplus.javaconcerthancil.domain.payments.PaymentRepository;
+import io.hhplus.javaconcerthancil.domain.payments.PaymentsService;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,8 +33,7 @@ public class PaymentsServiceUnitTest {
         Long reservationId = 1L;
 
 
-
-
+        paymentRepository.findByReservationId(reservationId);
 
     }
 }

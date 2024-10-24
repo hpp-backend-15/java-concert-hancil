@@ -1,7 +1,9 @@
 package io.hhplus.javaconcerthancil.interfaces.api.v1.payment;
 
+import io.hhplus.javaconcerthancil.application.payment.PaymentFacade;
 import io.hhplus.javaconcerthancil.interfaces.api.common.ApiResponse;
-import io.hhplus.javaconcerthancil.interfaces.api.v1.user.request.ChargeRequest;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.payment.request.PaymentsRequest;
+import io.hhplus.javaconcerthancil.interfaces.api.v1.payment.response.PaymentsResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 public class PaymentsController {
 
+    private final PaymentFacade paymentFacade;
 
     @PostMapping("/users/{userId}")
     public ApiResponse<PaymentsResponse> payments(
@@ -22,7 +25,7 @@ public class PaymentsController {
             @RequestBody PaymentsRequest requestBody
     ){
         log.info("requestBody: {}", requestBody);
-        return ApiResponse.success(new PaymentsResponse(1L,30000,"COMPLETED"));
+        return ApiResponse.success(paymentFacade.completePayment(userId, requestBody));
     }
 
 }

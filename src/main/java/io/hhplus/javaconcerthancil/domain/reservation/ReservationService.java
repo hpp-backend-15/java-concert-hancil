@@ -3,6 +3,8 @@ package io.hhplus.javaconcerthancil.domain.reservation;
 import io.hhplus.javaconcerthancil.domain.concert.Seat;
 import io.hhplus.javaconcerthancil.domain.concert.SeatRepository;
 import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
+import io.hhplus.javaconcerthancil.domain.payments.Payment;
+import io.hhplus.javaconcerthancil.domain.payments.PaymentRepository;
 import io.hhplus.javaconcerthancil.domain.user.User;
 import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
@@ -19,7 +21,7 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-
+    private final PaymentRepository paymentRepository;
     private final ReservationItemRepository reservationItemRepository;
     private final UserRepository userRepository;
     private final SeatRepository seatRepository;
@@ -64,6 +66,7 @@ public class ReservationService {
             savedReservation.addItem(saveReservationItem);
         }
 
+        paymentRepository.save(new Payment(savedReservation));
         return savedReservation;
     }
 }

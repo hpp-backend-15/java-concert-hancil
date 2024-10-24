@@ -26,10 +26,9 @@ public class Payment {
     private PaymentStatus status; // 결제 상태 (pending, completed, failed)
 
     // Constructors
-    public Payment(Reservation reservation, long amount) {
+
+    public Payment(Reservation reservation) {
         this.reservation = reservation;
-        this.paymentAt = LocalDateTime.now();
-        this.amount = amount;
         this.status = PaymentStatus.PENDING;
     }
 
@@ -46,7 +45,7 @@ public class Payment {
         return paymentAt;
     }
 
-    public float getAmount() {
+    public long getAmount() {
         return amount;
     }
 
@@ -54,5 +53,15 @@ public class Payment {
         return status;
     }
 
+    public void setPaymentAt(LocalDateTime paymentAt) {
+        this.paymentAt = paymentAt;
+    }
 
+    public void setAmount(long amount) {
+        this.amount = amount;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
 }
