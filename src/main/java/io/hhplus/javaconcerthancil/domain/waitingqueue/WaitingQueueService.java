@@ -49,4 +49,10 @@ public class WaitingQueueService {
         WaitingQueue waitingQueue = queueRepository.findByToken(token);
         return waitingQueue != null && waitingQueue.getStatus() == QueueStatus.PROGRESS;
     }
+
+    public void updateTokenExpire(String token) {
+        WaitingQueue queueItem = queueRepository.findByToken(token);
+        queueItem.setStatus(QueueStatus.EXPIRED);
+        queueRepository.save(queueItem);
+    }
 }
