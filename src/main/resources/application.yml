@@ -1,0 +1,30 @@
+#spring.application.name=java-concert-hancil
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+springdoc:
+  packages-to-scan: io.hhplus.javaconcerthancil
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+
+#  localhost:8080/hhplus에 명시된 API 명세를 순차적으로 진행하여,
+#  API가 정상적으로 기능을 제공하도록 하였습니다.
+
+  swagger-ui:
+    path: /hhplus
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+
+
