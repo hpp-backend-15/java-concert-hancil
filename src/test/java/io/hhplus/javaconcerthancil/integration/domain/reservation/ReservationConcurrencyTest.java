@@ -1,5 +1,6 @@
 package io.hhplus.javaconcerthancil.integration.domain.reservation;
 
+import io.hhplus.javaconcerthancil.domain.concert.Seat;
 import io.hhplus.javaconcerthancil.domain.concert.SeatRepository;
 import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationItemRepository;
@@ -18,6 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class ReservationConcurrencyTest {
@@ -43,6 +45,9 @@ public class ReservationConcurrencyTest {
     }
 
 
+    /**
+     * 1. 스레드 풀과 CountDownLatch 사용
+     */
     @Test
     @Transactional
     public void 동시성_좌석예약_비관적락_테스트() throws InterruptedException {
@@ -82,4 +87,50 @@ public class ReservationConcurrencyTest {
         }
 
     }
+
+
+    @Test
+    public void testConcurrentReservation() throws InterruptedException {
+
+        Long userAId = 1L;
+        Long userBId = 2L;
+
+        Long concertId = 1L;
+        Long scheduleId = 1L;
+        List<Long> seatIds = List.of(1L, 2L);
+
+
+        // 사용자 A와 B의 예약 시도
+        Runnable userA = () -> {
+            try {
+                reservationService.reserveConcert(userAId,concertId,scheduleId,seatIds);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+
+        Runnable userB = () -> {
+            try {
+                reservationService.reserveConcert(userBId,concertId,scheduleId,seatIds);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+
+        // 두 사용자 동시에 예약 시도
+        Thread threadA = new Thread(userA);
+        Thread threadB = new Thread(userB);
+        threadA.start();
+        threadB.start();
+        threadA.join();
+        threadB.join();
+
+        // 결과 검증
+        for(Long id : seatIds){
+            Seat updatedSeat = seatRepository.findById(id).orElseThrow();
+            assertEquals(SeatStatus.RESERVED, updatedSeat.getStatus());
+        }
+
+    }
+
 }
