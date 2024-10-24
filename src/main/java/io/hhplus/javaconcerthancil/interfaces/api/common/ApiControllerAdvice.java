@@ -14,6 +14,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 
     // 내가 정의한 Exception 이 발생했을 때 에러 응답
+    // default: 에러 핸들러를 통해 예외 로깅 및 응답 처리 핸들러 구현
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiResponse<?>> handleCustomException(ApiException e) {
         switch (e.getLogLevel()) {
