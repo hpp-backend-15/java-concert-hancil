@@ -19,8 +19,7 @@ public class Concert {
     @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ConcertSchedule> schedules = new ArrayList<>();
 
-    public Concert(final Long id, final String name, final String description) {
-        this.id = id;
+    public Concert(final String name, final String description) {
         this.name = name;
         this.description = description;
 

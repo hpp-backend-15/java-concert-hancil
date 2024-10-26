@@ -24,7 +24,7 @@ public class ConcertRepositoryTest {
     @BeforeAll
     @Transactional
     void setUp() {
-        Concert concert = new Concert(1L, "Crush콘서트", "Crush_크리스마스_공연");
+        Concert concert = new Concert("Crush콘서트", "Crush_크리스마스_공연");
 
         ConcertSchedule concertSchedule1 = new ConcertSchedule(
                 LocalDateTime.of(2024,10,1,10,0),
