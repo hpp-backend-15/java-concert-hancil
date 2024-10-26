@@ -1,10 +1,8 @@
 package io.hhplus.javaconcerthancil.integration.domain.concert;
 
-import io.hhplus.javaconcerthancil.domain.concert.Concert;
-import io.hhplus.javaconcerthancil.domain.concert.ConcertService;
-import io.hhplus.javaconcerthancil.domain.concert.Seat;
-import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
+import io.hhplus.javaconcerthancil.domain.concert.*;
 import io.hhplus.javaconcerthancil.support.DummyDataLoaderService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,11 +23,39 @@ public class ConcertServiceIntegrationTest {
     private ConcertService concertService;
 
     @Autowired
-    private DummyDataLoaderService dummyDataLoaderService;
+    private ConcertRepository concertRepository;
+
+    @Autowired
+    private ConcertScheduleRepository concertScheduleRepository;
+    ;
 
     @BeforeEach
+    @Transactional
     void setUp() {
-        dummyDataLoaderService.loadDummyData();
+        Concert concert = new Concert(1L, "Crush", "Crush");
+
+        ConcertSchedule concertSchedule1 = new ConcertSchedule(
+                LocalDateTime.of(2024,10,1,10,0),
+                LocalDateTime.of(2024,12,23,20,0)
+        );
+        ConcertSchedule concertSchedule2 = new ConcertSchedule(
+                LocalDateTime.of(2024,10,1,10,0),
+                LocalDateTime.of(2024,12,23,20,0)
+        );
+        ConcertSchedule concertSchedule3 = new ConcertSchedule(
+                LocalDateTime.of(2024,10,1,10,0),
+                LocalDateTime.of(2024,12,24,20,0)
+        );
+
+        concert.addSchedule(concertSchedule1);
+        concert.addSchedule(concertSchedule2);
+        concert.addSchedule(concertSchedule3);
+        concertRepository.save(concert);
+    }
+
+    @Test
+    void concert() {
+        assertThat(concertScheduleRepository.count()).isEqualTo(3) ;
     }
 
     @Test
@@ -42,7 +69,7 @@ public class ConcertServiceIntegrationTest {
 
         //then
         assertNotNull(scheduledConcert);
-        assertThat(scheduledConcert.getSchedules().size()).isEqualTo(2);
+        assertThat(scheduledConcert.getSchedules().size()).isEqualTo(3);
 
         //예약 가능한 날짜
         assertThat(scheduledConcert.getSchedules().get(0).getReservationAvailableAt())
