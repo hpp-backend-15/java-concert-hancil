@@ -42,7 +42,7 @@ public class ReservationService {
             if (seat == null) {
                 throw new ApiException(ErrorCode.E404, LogLevel.INFO, "Seat not found");
             }
-            if (!seat.getStatus().equals(SeatStatus.AVAILABLE)) {
+            if (!seat.isAvailable()) {
                 throw new ApiException(ErrorCode.E002, LogLevel.INFO, "Seat not available");
             }
         }

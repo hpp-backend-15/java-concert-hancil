@@ -36,6 +36,11 @@ public class Seat {
         this.seatPrice = seatPrice;
     }
 
+    public boolean isAvailable() {
+        return this.status.equals(SeatStatus.AVAILABLE);
+    }
+
+
     public Long getId() {
         return id;
     }
