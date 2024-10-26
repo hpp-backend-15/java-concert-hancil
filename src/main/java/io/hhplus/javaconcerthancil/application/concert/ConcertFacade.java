@@ -17,15 +17,14 @@ import java.util.List;
 @Service
 public class ConcertFacade {
 
-    private final WaitingQueueService queueService;
     private final ConcertService concertService;
 
     public GetConcertSchedulesResponse getConcertSchedules(Long concertId) {
-
-        //3. 예약 가능한 콘서트 조회
         Concert scheduledConcert = concertService.getScheduledConcert(concertId);
-
-        return new GetConcertSchedulesResponse(1L, scheduledConcert.getSchedules());
+        return new GetConcertSchedulesResponse(
+                scheduledConcert.getId(),
+                scheduledConcert.getSchedules()
+        );
     }
 
     public GetConcertSeatsRequest getConcertSeats(Long concertId, Long scheduleId) {
