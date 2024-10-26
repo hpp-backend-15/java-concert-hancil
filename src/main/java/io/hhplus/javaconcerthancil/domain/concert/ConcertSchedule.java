@@ -30,19 +30,19 @@ public class ConcertSchedule {
     public ConcertSchedule(LocalDateTime availableAt, LocalDateTime concertAt) {
         this.reservationAvailableAt = availableAt;
         this.concertAt = concertAt;
+        //콘서트 예약가능 및 시작 날짜를 설정함과 동시에 좌석 생성
+        addSeats();
     }
 
     // 좌석 추가 메서드
-    public void addSeats() {
-        for (int i = 0; i < 50; i++) {
-            int seatPrice = (i >= 40) ? 15000 : 10000; // 1~40번 좌석은 10000원, 41~50번 좌석은 15000원
+    private void addSeats() {
+        for (int i = 1; i <= 50; i++) {
+            int seatPrice = (i >= 41) ? 15000 : 10000; // 1~40번 좌석은 10000원, 41~50번 좌석은 15000원
             Seat seat = new Seat(null, i, SeatStatus.AVAILABLE, seatPrice); // id는 null로 설정하여 자동 생성
             seat.setConcertSchedule(this); // 좌석과 콘서트 스케줄 관계 설정
             seats.add(seat); // 좌석 추가
         }
     }
-
-
 
     public void setConcert(Concert concert) {
         this.concert = concert;

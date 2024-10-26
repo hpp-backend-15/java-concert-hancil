@@ -39,9 +39,6 @@ public class ConcertRepositoryTest {
                 LocalDateTime.of(2024,12,25,20,0)
         );
 
-        concertSchedule1.addSeats();
-        concertSchedule2.addSeats();
-        concertSchedule3.addSeats();
         concert.addSchedule(concertSchedule1);
         concert.addSchedule(concertSchedule2);
         concert.addSchedule(concertSchedule3);

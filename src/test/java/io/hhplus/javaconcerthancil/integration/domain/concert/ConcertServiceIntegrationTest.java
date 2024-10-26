@@ -1,22 +1,19 @@
 package io.hhplus.javaconcerthancil.integration.domain.concert;
 
 import io.hhplus.javaconcerthancil.domain.concert.*;
-import io.hhplus.javaconcerthancil.support.DummyDataLoaderService;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ConcertServiceIntegrationTest {
 
     @Autowired
@@ -25,14 +22,13 @@ public class ConcertServiceIntegrationTest {
     @Autowired
     private ConcertRepository concertRepository;
 
-    @Autowired
-    private ConcertScheduleRepository concertScheduleRepository;
-    ;
+    final int CONCERT_SCHEDULED_SIZE_3 = 3;
+    final int MAX_SEAT_50 = 50;
 
-    @BeforeEach
+    @BeforeAll
     @Transactional
     void setUp() {
-        Concert concert = new Concert(1L, "Crush", "Crush");
+        Concert concert = new Concert("Crush콘서트", "Crush_크리스마스_공연");
 
         ConcertSchedule concertSchedule1 = new ConcertSchedule(
                 LocalDateTime.of(2024,10,1,10,0),
@@ -40,22 +36,18 @@ public class ConcertServiceIntegrationTest {
         );
         ConcertSchedule concertSchedule2 = new ConcertSchedule(
                 LocalDateTime.of(2024,10,1,10,0),
-                LocalDateTime.of(2024,12,23,20,0)
+                LocalDateTime.of(2024,12,24,20,0)
         );
         ConcertSchedule concertSchedule3 = new ConcertSchedule(
                 LocalDateTime.of(2024,10,1,10,0),
-                LocalDateTime.of(2024,12,24,20,0)
+                LocalDateTime.of(2024,12,25,20,0)
         );
 
         concert.addSchedule(concertSchedule1);
         concert.addSchedule(concertSchedule2);
         concert.addSchedule(concertSchedule3);
         concertRepository.save(concert);
-    }
 
-    @Test
-    void concert() {
-        assertThat(concertScheduleRepository.count()).isEqualTo(3) ;
     }
 
     @Test
@@ -69,20 +61,21 @@ public class ConcertServiceIntegrationTest {
 
         //then
         assertNotNull(scheduledConcert);
-        assertThat(scheduledConcert.getSchedules().size()).isEqualTo(3);
+        assertThat(scheduledConcert.getSchedules().size()).isEqualTo(CONCERT_SCHEDULED_SIZE_3);
 
+
+        /**
+         * 예약 가능날짜는 콘서트 시작 일정과 관계없이 고정되어있고
+         * 시작일정은 연속적으로열린다는 가정
+         */
         //예약 가능한 날짜
-        assertThat(scheduledConcert.getSchedules().get(0).getReservationAvailableAt())
-                .isEqualTo(LocalDateTime.of(2024, 10, 1, 10, 0));
-        assertThat(scheduledConcert.getSchedules().get(1).getReservationAvailableAt())
-                .isEqualTo(LocalDateTime.of(2024, 10, 1, 10, 0));
-
+        for (int i = 0; i < scheduledConcert.getSchedules().size(); i++) {
+            assertThat(scheduledConcert.getSchedules().get(i).getReservationAvailableAt())
+                    .isEqualTo(LocalDateTime.of(2024, 10, 1, 10, 0));
         //콘서트 시작 날짜
-        assertThat(scheduledConcert.getSchedules().get(0).getConcertAt())
-                .isEqualTo(LocalDateTime.of(2024, 12, 24, 19, 0));
-        assertThat(scheduledConcert.getSchedules().get(1).getConcertAt())
-                .isEqualTo(LocalDateTime.of(2024, 12, 25, 19, 0));
-
+            assertThat(scheduledConcert.getSchedules().get(i).getConcertAt())
+                    .isEqualTo(LocalDateTime.of(2024, 12, 23+i, 20, 0));
+        }
     }
 
 
@@ -111,7 +104,6 @@ public class ConcertServiceIntegrationTest {
     @Test
     @DisplayName("해당 날짜의 좌석 조회-좌석정보를 달라")
     void getConcertSeatsTest() {
-        final int MAX_SEAT_50 = 50;
 
         //given
         Long concertId = 1L;
@@ -122,11 +114,19 @@ public class ConcertServiceIntegrationTest {
 
         //then
         assertNotNull(concertSeats);
+
         assertThat(concertSeats.size()).isEqualTo(MAX_SEAT_50);
-        assertThat(concertSeats.get(0).getSeatPrice()).isPositive();
-        assertThat(concertSeats.get(0).getStatus()).isInstanceOf(SeatStatus.class);
-        //모든 콘서트의 좌석 번호를 양의 정수로 구성한다고 가정했을 때
-        assertThat(concertSeats.get(0).getSeatNumber()).isLessThanOrEqualTo(MAX_SEAT_50);
+
+        for(int i=0;i<concertSeats.size();i++){
+            //모든 콘서트의 좌석 번호를 양의 정수로 구성한다고 가정했을 때
+            assertThat(concertSeats.get(i).getSeatNumber()).isLessThanOrEqualTo(MAX_SEAT_50);
+            assertThat(concertSeats.get(i).getStatus()).isInstanceOf(SeatStatus.class);
+
+            int expectedPrice = (i >= 40) ? 15_000 : 10_000; // 가격 결정
+            assertThat(concertSeats.get(i).getSeatPrice()).isEqualTo(expectedPrice);
+        }
+
+
     }
 
 
