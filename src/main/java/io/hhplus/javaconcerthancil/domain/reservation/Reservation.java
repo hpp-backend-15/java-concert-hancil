@@ -57,6 +57,14 @@ public class Reservation {
         return reservationAt;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public ReservationStatus getStatus() {
+        return status;
+    }
+
     public List<ReservationItem> getItems() {
         return items;
     }

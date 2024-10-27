@@ -22,16 +22,19 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final PaymentRepository paymentRepository;
-    private final ReservationItemRepository reservationItemRepository;
     private final UserRepository userRepository;
     private final SeatRepository seatRepository;
 
     @Transactional
     public Reservation reserveConcert(Long userId, Long concertId, Long scheduleId, List<Long> seatIds) {
 
-        // 1. 사용자 확인
+        // 1-1. 사용자 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApiException(ErrorCode.E404, LogLevel.INFO, "User not found"));
+
+        // 1-2 예약 상태 초기화
+        Reservation reservation = new Reservation(user);
+
 
         // 2. 좌석 유효성 검사
 //        List<Seat> seats = seatRepository.findAllById(seatIds);
@@ -45,26 +48,18 @@ public class ReservationService {
             if (!seat.isAvailable()) {
                 throw new ApiException(ErrorCode.E002, LogLevel.INFO, "Seat not available");
             }
-        }
 
-        // 3. 예약 저장
-        Reservation reservation = new Reservation(user);
-        Reservation savedReservation = reservationRepository.save(reservation); // 예약 먼저 저장
-
-        for (Seat seat : seats) {
-            // 좌석 상태 변경
             seat.setStatus(SeatStatus.RESERVED);
+
+            // 예약 아이템 생성 및 예약에 추가
+            ReservationItem item = new ReservationItem();
+            item.setSeat(seat);
+            item.setSeatPrice(seat.getSeatPrice()); // 좌석 가격 설정
+            reservation.addItem(item); // 예약에 아이템 추가
             seatRepository.save(seat);
-
-            // 예약 항목 저장
-            ReservationItem reservationItem = new ReservationItem();
-            reservationItem.setReservation(savedReservation);
-            reservationItem.setSeat(seat);
-            reservationItem.setSeatPrice(seat.getSeatPrice());
-
-            ReservationItem saveReservationItem = reservationItemRepository.save(reservationItem);
-            savedReservation.addItem(saveReservationItem);
         }
+
+        Reservation savedReservation = reservationRepository.save(reservation); // 예약 먼저 저장
 
         paymentRepository.save(new Payment(savedReservation));
         return savedReservation;

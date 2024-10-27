@@ -64,4 +64,8 @@ public class Seat {
     public void setStatus(SeatStatus status) {
         this.status = status;
     }
+
+    public ConcertSchedule getConcertSchedule() {
+        return concertSchedule;
+    }
 }
