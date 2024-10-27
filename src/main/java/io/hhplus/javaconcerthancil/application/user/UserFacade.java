@@ -33,10 +33,10 @@ public class UserFacade {
         User balanceUpdatedUser = userService.updateBalance(user);
 
         //3. 이력 저장
-        BalanceHistory balanceHistory = new BalanceHistory(
-            user, requestBody.amount(), TransactionType.CHARGE
-        );
-        userService.saveHistory(balanceHistory);
+//        BalanceHistory balanceHistory = new BalanceHistory(
+//            user, requestBody.amount(), TransactionType.CHARGE
+//        );
+//        userService.saveHistory(balanceHistory);
 
         return new ChargeResponse(balanceUpdatedUser.getId(), balanceUpdatedUser.getBalance());
     }

@@ -18,6 +18,8 @@ public class BalanceHistory {
     private User user;
     private long amount;
     private LocalDateTime transactionAt;
+
+    @Enumerated(EnumType.STRING)
     private TransactionType type; // charge, use etc..
 
     public BalanceHistory(User user, long amount, TransactionType type) {
@@ -29,6 +31,14 @@ public class BalanceHistory {
 
     public TransactionType getType() {
         return type;
+    }
+
+    public long getAmount() {
+        return amount;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
 

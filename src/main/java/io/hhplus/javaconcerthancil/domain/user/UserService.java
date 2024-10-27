@@ -20,7 +20,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public BalanceHistory saveHistory(BalanceHistory balanceHistory) {
-        return balanceHistoryRepository.save(balanceHistory);
-    }
+//    public BalanceHistory saveHistory(BalanceHistory balanceHistory) {
+//        return balanceHistoryRepository.save(balanceHistory);
+//    }
 }

@@ -41,22 +41,21 @@ public class PaymentFacade {
         Payment paymentsByReservationId = paymentsService.findPaymentsByReservationId(requestBody.reservationId());
         Optional<Integer> totalSeatPriceByReservationId = reservationItemRepository.findTotalSeatPriceByReservationId(requestBody.reservationId());
 
-
         //3. 사용자 포인트 사용
         User user = userService.findById(userId).orElseThrow(
                 ()-> new ApiException(ErrorCode.E404, LogLevel.INFO, "user not found")
         );
 
         user.subtractAmount(totalSeatPriceByReservationId.get());
-        User updateBalanceUser = userService.updateBalance(user);
-
-        BalanceHistory balanceHistory = new BalanceHistory(
-                updateBalanceUser,
-                totalSeatPriceByReservationId.get(),
-                TransactionType.USE
-        );
-
-        userService.saveHistory(balanceHistory);
+        userService.updateBalance(user);
+//        User updateBalanceUser = userService.updateBalance(user);
+//        BalanceHistory balanceHistory = new BalanceHistory(
+//                updateBalanceUser,
+//                totalSeatPriceByReservationId.get(),
+//                TransactionType.USE
+//        );
+//
+//        userService.saveHistory(balanceHistory);
 
         //4. 결제완료
         Payment payment = paymentsService.completePayment(paymentsByReservationId, totalSeatPriceByReservationId.get());
