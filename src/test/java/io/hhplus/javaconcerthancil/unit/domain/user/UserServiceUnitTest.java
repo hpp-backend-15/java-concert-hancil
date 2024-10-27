@@ -19,9 +19,6 @@ public class UserServiceUnitTest {
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private BalanceHistoryRepository balanceHistoryRepository;
-
     @InjectMocks
     private UserService userService;
 
@@ -53,7 +50,7 @@ public class UserServiceUnitTest {
         //given
         long userId = 1L;
         int wantToCharge = 10_000;
-        User user = new User(userId,"JHC");
+        User user = new User("JHC");
         user.addAmount(wantToCharge);
         given(userRepository.save(user)).willReturn(user);
 
@@ -62,46 +59,6 @@ public class UserServiceUnitTest {
 
         //then
         assertThat(charge.getBalance()).isEqualTo(wantToCharge);
-
-    }
-
-    @Test
-    void 충전_이력_저장() {
-        //given
-        long userId = 1L;
-        int wantToCharge = 10_000;
-        User user = new User(userId,"JHC");
-        user.addAmount(wantToCharge);
-
-        BalanceHistory balanceHistory = new BalanceHistory(user, wantToCharge, TransactionType.CHARGE);
-        given(balanceHistoryRepository.save(balanceHistory)).willReturn(balanceHistory);
-
-        //when
-        BalanceHistory savedBalanceHistory = userService.saveHistory(balanceHistory);
-
-        assertThat(savedBalanceHistory.getType()).isEqualTo(TransactionType.CHARGE);
-    }
-
-    @Test
-    void 사용_이력_저장() {
-
-        //given
-        long userId = 1L;
-        int have = 100_000;
-        int wantToUse = 10_000;
-        User user = new User(userId,"JHC");
-        user.addAmount(have);
-        user.subtractAmount(wantToUse);
-
-        BalanceHistory balanceHistory = new BalanceHistory(user, wantToUse, TransactionType.USE);
-        given(balanceHistoryRepository.save(balanceHistory)).willReturn(balanceHistory);
-
-
-        //when
-        BalanceHistory savedBalanceHistory = userService.saveHistory(balanceHistory);
-
-        assertThat(savedBalanceHistory.getType()).isEqualTo(TransactionType.USE);
-
 
     }
 }
