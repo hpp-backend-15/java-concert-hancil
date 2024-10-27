@@ -40,5 +40,11 @@ public class ReservationItem {
         return seatPrice;
     }
 
+    public Reservation getReservation() {
+        return reservation;
+    }
 
+    public Seat getSeat() {
+        return seat;
+    }
 }
