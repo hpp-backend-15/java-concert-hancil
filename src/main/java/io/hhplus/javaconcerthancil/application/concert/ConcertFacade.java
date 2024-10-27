@@ -1,13 +1,10 @@
 package io.hhplus.javaconcerthancil.application.concert;
 
-
 import io.hhplus.javaconcerthancil.domain.concert.Concert;
 import io.hhplus.javaconcerthancil.domain.concert.ConcertService;
 import io.hhplus.javaconcerthancil.domain.concert.Seat;
-import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueueService;
 import io.hhplus.javaconcerthancil.interfaces.api.v1.concert.response.GetConcertSchedulesResponse;
 import io.hhplus.javaconcerthancil.interfaces.api.v1.concert.response.GetConcertSeatsRequest;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,10 @@
 package io.hhplus.javaconcerthancil.domain.concert;
 
+import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
+import io.hhplus.javaconcerthancil.interfaces.api.common.ErrorCode;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.logging.LogLevel;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,12 +19,13 @@ public class ConcertSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private LocalDateTime reservationAvailableAt;
+
+    private LocalDateTime concertAt;
+
     @ManyToOne
     @JoinColumn(name = "concert_id")
     private Concert concert;
-
-    private LocalDateTime reservationAvailableAt;
-    private LocalDateTime concertAt;
 
     @OneToMany(mappedBy = "concertSchedule", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Seat> seats = new ArrayList<>();
@@ -44,9 +48,19 @@ public class ConcertSchedule {
         }
     }
 
-    public void setConcert(Concert concert) {
-        this.concert = concert;
+    public boolean isValid(Long concertId) {
+        LocalDateTime now = LocalDateTime.now();
+
+        if (concert == null || !concert.getId().equals(concertId)) {
+            throw new ApiException(ErrorCode.E006, LogLevel.INFO);
+        }
+
+        if (reservationAvailableAt.isAfter(now) || concertAt.isBefore(now)) {
+            throw new ApiException(ErrorCode.E006, LogLevel.INFO, "콘서트 예약이 불가합니다.");
+        }
+        return true; // 모든 유효성 검사를 통과한 경우
     }
+
 
     public Long getId() {
         return id;
@@ -62,6 +76,10 @@ public class ConcertSchedule {
 
     public List<Seat> getSeats() {
         return seats;
+    }
+
+    public void setConcert(Concert concert) {
+        this.concert = concert;
     }
 
     public void setSeats(List<Seat> seats) {

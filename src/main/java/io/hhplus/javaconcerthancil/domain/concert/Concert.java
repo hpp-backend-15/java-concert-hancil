@@ -22,7 +22,6 @@ public class Concert {
     public Concert(final String name, final String description) {
         this.name = name;
         this.description = description;
-
     }
 
     public void addSchedule(ConcertSchedule schedule) {

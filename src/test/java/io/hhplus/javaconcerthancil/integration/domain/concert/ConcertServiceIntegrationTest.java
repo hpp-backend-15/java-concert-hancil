@@ -1,6 +1,7 @@
 package io.hhplus.javaconcerthancil.integration.domain.concert;
 
 import io.hhplus.javaconcerthancil.domain.concert.*;
+import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +88,7 @@ public class ConcertServiceIntegrationTest {
         Long scheduleId = 1L;
 
         //when - then
-        assertThrows(IllegalArgumentException.class, () -> concertService.getConcertSeats(concertId, scheduleId));
+        assertThrows(ApiException.class, () -> concertService.getConcertSeats(concertId, scheduleId));
     }
 
     @Test
