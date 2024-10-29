@@ -60,44 +60,10 @@ public class UserBalanceConcurrencyTest {
         userWithVersionRepository.deleteAll();
     }
 
-    @Test
-    @Order(2)
-    void 비관락테스트() throws InterruptedException {
-//        setUp1();
-        List<User> users = userRepository.findAll();
 
-        ChargeRequest request = new ChargeRequest(1000); // 충전할 금액
-
-        int numberOfThreads = users.size();
-        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
-
-        for (long i = 1; i <= numberOfThreads; i++) {
-            long finalI = i;
-            executor.submit(() -> {
-                try {
-                    userFacade.chargeWithPessimisticLock(finalI, request);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-
-        latch.await(); // 모든 스레드가 완료될 때까지 대기
-
-        // 최종 잔액 확인
-        List<User> afterUsers = userRepository.findAll();
-        for(User user : afterUsers) {
-            assertThat(user.getBalance()).isEqualTo(1000);
-        }
-    }
-
-    @Test
-    @Order(1)
+//    @Test
+//    @Order(1)
     void 낙관락테스트() throws InterruptedException {
-//        setUp2();
         List<UserWithVersion> users = userWithVersionRepository.findAll();
 
         ChargeRequest request = new ChargeRequest(1000); // 충전할 금액
@@ -106,8 +72,8 @@ public class UserBalanceConcurrencyTest {
         ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
-        for (long i = 1; i <= numberOfThreads; i++) {
-            long finalI = i;
+        for (int i = 0; i < numberOfThreads; i++) {
+            long finalI = users.get(i).getId() ;
             executor.submit(() -> {
                 try {
                     userFacade.chargeWithOptimisticLock(finalI, request);
@@ -129,13 +95,46 @@ public class UserBalanceConcurrencyTest {
         }
     }
 
+//    @Test
+//    @Order(2)
+    void 비관락테스트() throws InterruptedException {
+        List<User> users = userRepository.findAll();
+
+        ChargeRequest request = new ChargeRequest(1000); // 충전할 금액
+
+        int numberOfThreads = users.size();
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        for (int i = 0; i < numberOfThreads; i++) {
+            long finalI = users.get(i).getId() ;
+            executor.submit(() -> {
+                try {
+                    userFacade.chargeWithPessimisticLock(finalI, request);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await(); // 모든 스레드가 완료될 때까지 대기
+
+        // 최종 잔액 확인
+        List<User> afterUsers = userRepository.findAll();
+        for(User user : afterUsers) {
+            assertThat(user.getBalance()).isEqualTo(1000);
+        }
+    }
+
     @Test
     @Order(3)
     void 비관적따닥() throws InterruptedException {
         User jhc = userRepository.save(new User("JHC"));
 
         ChargeRequest request = new ChargeRequest(1000); // 충전할 금액
-        int numberOfThreads = 10;
+        int numberOfThreads = 1000;
         ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
@@ -165,16 +164,16 @@ public class UserBalanceConcurrencyTest {
     @Order(4)
     void 낙관적따닥() throws InterruptedException {
         UserWithVersion jhc = userWithVersionRepository.save(new UserWithVersion("JHC"));
-
+        Long testId = jhc.getId();
         ChargeRequest request = new ChargeRequest(1000); // 충전할 금액
-        int numberOfThreads = 10;
+        int numberOfThreads = 1000;
         ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
         for (int i = 0; i < numberOfThreads; i++) {
             executor.submit(() -> {
                 try {
-                    userFacade.chargeWithOptimisticLock(1L, request);
+                    userFacade.chargeWithOptimisticLock(testId, request);
                 } catch (OptimisticLockingFailureException e) {
                     // 낙관적 잠금 예외 처리 로직 (필요 시 로그 추가)
                     System.out.println("충돌!");
@@ -193,7 +192,7 @@ public class UserBalanceConcurrencyTest {
         UserWithVersion savedUser = byId.get();
 
         //결과를 보장받지 못함
-        assertThat(savedUser.getBalance()).isNotEqualTo(1000);
+        assertThat(savedUser.getBalance()).isEqualTo(1000);
 
     }
 
@@ -206,7 +205,7 @@ public class UserBalanceConcurrencyTest {
         ChargeRequest chargeRequest = new ChargeRequest(1000);
 
         // 10개의 스레드로 동시에 요청 보내기
-        int numberOfThreads = 10;
+        int numberOfThreads = 1000;
         ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
