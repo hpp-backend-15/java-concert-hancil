@@ -4,16 +4,14 @@ import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
 import io.hhplus.javaconcerthancil.interfaces.api.common.ErrorCode;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.boot.logging.LogLevel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "concert_user")
-@ToString
+@Entity(name = "concert_user_version")
 @NoArgsConstructor
-public class User {
+public class UserWithVersion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,14 +21,18 @@ public class User {
     private long balance;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<BalanceHistory> balanceHistoryList = new ArrayList<>();
+    private List<BalanceHistoryVersion> balanceHistoryList = new ArrayList<>();
 
-    public User(String name) {
+    @Version
+    // 낙관적 락을 위한 버전 필드 추가
+    private Integer version;
+
+    public UserWithVersion(String name) {
         this.name = name;
         this.balance = 0;
     }
 
-    public User(String name, long balance) {
+    public UserWithVersion(String name, long balance) {
         this.name = name;
         this.balance = balance;
     }
@@ -52,7 +54,7 @@ public class User {
     }
 
     private void recordBalanceHistory(int amount, TransactionType transactionType) {
-        BalanceHistory history = new BalanceHistory(this, amount, transactionType);
+        BalanceHistoryVersion history = new BalanceHistoryVersion(this, amount, transactionType);
         balanceHistoryList.add(history);
     }
 
@@ -68,7 +70,7 @@ public class User {
         return balance;
     }
 
-    public List<BalanceHistory> getBalanceHistoryList() {
+    public List<BalanceHistoryVersion> getBalanceHistoryList() {
         return balanceHistoryList;
     }
 }
