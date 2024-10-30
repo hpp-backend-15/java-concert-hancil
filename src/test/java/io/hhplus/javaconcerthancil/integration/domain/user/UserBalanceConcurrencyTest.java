@@ -9,6 +9,8 @@ import io.hhplus.javaconcerthancil.interfaces.api.v1.user.request.ChargeRequest;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -34,8 +36,8 @@ public class UserBalanceConcurrencyTest {
     @Autowired
     private UserWithVersionRepository userWithVersionRepository;
 
-//    @Autowired
-//    private RedissonClient redissonClient;
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Autowired
     private UserFacade userFacade;
@@ -214,48 +216,48 @@ public class UserBalanceConcurrencyTest {
     }
 
 
-//    @Test
-//    @Order(5)
-//    void 분산락따닥() throws InterruptedException {
-//
-//        User jhc = userRepository.save(new User("JHC"));
-//        ChargeRequest chargeRequest = new ChargeRequest(1000);
-//
-//        // 10개의 스레드로 동시에 요청 보내기
+    @Test
+    @Order(5)
+    void 분산락따닥() throws InterruptedException {
+
+        User jhc = userRepository.save(new User("JHC"));
+        ChargeRequest chargeRequest = new ChargeRequest(1000);
+
+        // 10개의 스레드로 동시에 요청 보내기
 //        int numberOfThreads = 1000;
-//        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
-//        CountDownLatch latch = new CountDownLatch(numberOfThreads);
-//
-//        for (int i = 0; i < numberOfThreads; i++) {
-//            long userId = jhc.getId();
-//            executor.submit(() -> {
-//                RLock lock = redissonClient.getLock("lock:user:" + userId); // 유저 ID에 대한 락 생성
-//                try {
-//                    if (lock.tryLock()) { // 락 획득
-//                        userFacade.charge(userId, chargeRequest);
-//                    } else {
-//                        System.out.println("충돌! 이미 처리 중인 요청입니다."); // 락을 획득하지 못한 경우
-//                    }
-//                } catch (Exception e) {
-//                    System.out.println("충돌 발생: " + e.getMessage());
-//                } finally {
-//
-//                    if (lock.isHeldByCurrentThread()) {
-//                        lock.unlock(); // 락 해제
-//                    }
-//                    latch.countDown();
-//                }
-//            });
-//        }
-//
-//        latch.await(); // 모든 스레드가 완료될 때까지 대기
-//
-//        // 최종 잔액 확인
-//        User user1 = userRepository.findById(jhc.getId()).orElseThrow();
-//        System.out.println(user1.getBalance());
-//
-//        assertThat(user1.getBalance()).isEqualTo(1000);
-//    }
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        for (int i = 0; i < numberOfThreads; i++) {
+            long userId = jhc.getId();
+            executor.submit(() -> {
+                RLock lock = redissonClient.getLock("lock:user:" + userId); // 유저 ID에 대한 락 생성
+                try {
+                    if (lock.tryLock()) { // 락 획득
+                        userFacade.charge(userId, chargeRequest);
+                    } else {
+                        System.out.println("충돌! 이미 처리 중인 요청입니다."); // 락을 획득하지 못한 경우
+                    }
+                } catch (Exception e) {
+                    System.out.println("충돌 발생: " + e.getMessage());
+                } finally {
+
+                    if (lock.isHeldByCurrentThread()) {
+                        lock.unlock(); // 락 해제
+                    }
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await(); // 모든 스레드가 완료될 때까지 대기
+
+        // 최종 잔액 확인
+        User user1 = userRepository.findById(jhc.getId()).orElseThrow();
+        System.out.println(user1.getBalance());
+
+        assertThat(user1.getBalance()).isEqualTo(1000);
+    }
 
 
 }
