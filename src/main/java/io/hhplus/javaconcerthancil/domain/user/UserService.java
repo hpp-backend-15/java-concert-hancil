@@ -21,8 +21,6 @@ public class UserService {
         return userWithVersionRepository.findById(userId);
     }
 
-
-    @Transactional
     public Optional<User> findByIdWithLock(long userId) {
         return userRepository.findByIdWithLock(userId);
     }

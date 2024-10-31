@@ -164,7 +164,7 @@ public class UserBalanceConcurrencyTest {
     }
 
     @Test
-    @Order(4)
+    @Order(2)
     void 낙관적따닥() throws InterruptedException {
         UserWithVersion jhc = userWithVersionRepository.save(new UserWithVersion("JHC"));
         Long testId = jhc.getId();
@@ -217,7 +217,7 @@ public class UserBalanceConcurrencyTest {
 
 
     @Test
-    @Order(5)
+    @Order(1)
     void 분산락따닥() throws InterruptedException {
 
         User jhc = userRepository.save(new User("JHC"));

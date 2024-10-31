@@ -10,6 +10,7 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -75,12 +76,12 @@ public class UserFacade {
     }
 
     @Transactional
-//    @Retryable(
-//            retryFor = {OptimisticLockingFailureException.class, ObjectOptimisticLockingFailureException.class},
-//            maxAttempts = 5,
-//            backoff = @Backoff(delay = 1000)
-//    )
-    public void chargeWithOptimisticLock(long userId, ChargeRequest requestBody) {
+    @Retryable(
+            retryFor = {OptimisticLockingFailureException.class, ObjectOptimisticLockingFailureException.class},
+            maxAttempts = 10,
+            backoff = @Backoff(delay = 100)
+    )
+    public ChargeResponse chargeWithOptimisticLock(long userId, ChargeRequest requestBody) {
 
         //1. 사용자 조회
         UserWithVersion user = userService.findByIdWithVersion(userId).orElseThrow(() ->
@@ -89,13 +90,9 @@ public class UserFacade {
 
         //2. 충전 및 저장
         user.addAmount(requestBody.amount());
-        userService.updateBalanceWithVersion(user);
 
-//        try {
-            // 낙관적 락이 걸린 상태에서 저장
-//        } catch (ObjectOptimisticLockingFailureException e) {
-//            throw new ApiException(ErrorCode.E409, LogLevel.INFO, "충돌이 발생했습니다. 다시 시도해주세요.");
-//        }
+//             낙관적 락이 걸린 상태에서 저장
+        UserWithVersion balanceUpdatedUser = userService.updateBalanceWithVersion(user);
 
 
         //3. 이력 저장
@@ -104,5 +101,25 @@ public class UserFacade {
 //        );
 //        userService.saveHistory(balanceHistory);
 
+        return new ChargeResponse(balanceUpdatedUser.getId(), balanceUpdatedUser.getBalance());
+    }
+
+
+
+    @Transactional
+    public ChargeResponse chargeWithRedisLock(Long userId, ChargeRequest requestBody) {
+
+        //1. 사용자 조회
+        UserWithVersion user = userService.findByIdWithVersion(userId).orElseThrow(() ->
+                new ApiException(ErrorCode.E404, LogLevel.INFO, "사용자가 존재하지 않습니다.")
+        );
+
+        //2. 충전 및 저장
+        user.addAmount(requestBody.amount());
+
+        //낙관적 락이 걸린 상태에서 저장
+        UserWithVersion balanceUpdatedUser = userService.updateBalanceWithVersion(user);
+
+        return new ChargeResponse(balanceUpdatedUser.getId(), balanceUpdatedUser.getBalance());
     }
 }
