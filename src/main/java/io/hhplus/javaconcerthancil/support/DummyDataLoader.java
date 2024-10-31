@@ -3,6 +3,8 @@ package io.hhplus.javaconcerthancil.support;
 import io.hhplus.javaconcerthancil.domain.concert.*;
 import io.hhplus.javaconcerthancil.domain.user.User;
 import io.hhplus.javaconcerthancil.domain.user.UserRepository;
+import io.hhplus.javaconcerthancil.domain.user.UserWithVersion;
+import io.hhplus.javaconcerthancil.domain.user.UserWithVersionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -14,9 +16,8 @@ import java.time.LocalDateTime;
 public class DummyDataLoader implements CommandLineRunner {
 
     private final ConcertRepository concertRepository;
-    private final ConcertScheduleRepository scheduleRepository;
-    private final SeatRepository seatRepository;
     private final UserRepository userRepository;
+    private final UserWithVersionRepository userWithVersionRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -29,7 +30,9 @@ public class DummyDataLoader implements CommandLineRunner {
 
         for(String name : userNames) {
             User user = new User(name);
+            UserWithVersion userWithVersion = new UserWithVersion(name);
             userRepository.save(user);
+            userWithVersionRepository.save(userWithVersion);
         }
 
         // 콘서트 생성

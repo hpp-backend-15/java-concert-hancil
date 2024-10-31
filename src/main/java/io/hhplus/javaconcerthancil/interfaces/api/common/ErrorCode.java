@@ -17,7 +17,7 @@ public enum ErrorCode {
 
     E404("E404", "데이터를 조회할 수 없습니다."),
     E500("E500", "알 수 없는 에러입니다. 관리자한테 문의해주세요."),
-    E409("E409", "충돌");
+    E409("E409", "충돌이 발생했습니다. 다시 시도해주세요.");
 
     private final String code;
     private final String message;

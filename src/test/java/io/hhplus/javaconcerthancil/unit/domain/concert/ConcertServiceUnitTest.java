@@ -41,16 +41,14 @@ public class ConcertServiceUnitTest {
     void getScheduledConcertTest() {
         //given
         Long concertId = 1L;
-        Concert concert = new Concert(concertId, "Test Concert", "Test Concert");
+        Concert concert = new Concert("Test Concert", "Test Concert");
 
         ConcertSchedule schedule1 = new ConcertSchedule(
-                1L,
                 LocalDateTime.of(2024, 10, 1, 10, 0),
                 LocalDateTime.of(2024, 12, 24, 19, 0)
         );
 
         ConcertSchedule schedule2 = new ConcertSchedule(
-                2L,
                 LocalDateTime.of(2024, 10, 1, 10, 0),
                 LocalDateTime.of(2024, 12, 25, 19, 0)
         );
@@ -101,7 +99,7 @@ public class ConcertServiceUnitTest {
         Long scheduleId = -999L;
 
         // 모킹: scheduleId가 없을 때 예외 발생
-        Concert concert = new Concert(concertId, "Test Concert", "Test Concert");
+        Concert concert = new Concert("Test Concert", "Test Concert");
         given(concertRepository.findById(concertId)).willReturn(Optional.of(concert));
         given(concertScheduleRepository.findById(concertId)).willThrow(new IllegalArgumentException("ConcertSchedule not found"));
 
@@ -119,9 +117,9 @@ public class ConcertServiceUnitTest {
         Long scheduleId = 2L;
 
         // 모킹: 좌석 리스트를 반환하도록 설정
-        Concert concert = new Concert(concertId, "Test Concert", "Test Concert");
+        Concert concert = new Concert("Test Concert", "Test Concert");
         ConcertSchedule schedule = new ConcertSchedule(
-                scheduleId,
+//                scheduleId,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(1)
         );
