@@ -6,12 +6,14 @@ import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationItemRepository;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationRepository;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationService;
-import io.hhplus.javaconcerthancil.support.DummyDataLoaderService;
+import io.hhplus.javaconcerthancil.domain.user.User;
+import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -22,13 +24,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class ReservationConcurrencyTest {
 
     @Autowired
-    private DummyDataLoaderService dummyDataLoaderService;
+    private ReservationService reservationService;
 
     @Autowired
-    private ReservationService reservationService;
+    private UserRepository userRepository;
 
     @Autowired
     private SeatRepository seatRepository;
@@ -39,57 +42,8 @@ public class ReservationConcurrencyTest {
     @Autowired
     private ReservationItemRepository reservationItemRepository;
 
-    @BeforeEach
-    void setUp() {
-        dummyDataLoaderService.loadDummyData();
-    }
-
-
-    /**
-     * 1. 스레드 풀과 CountDownLatch 사용
-     */
     @Test
-    @Transactional
-    public void 동시성_좌석예약_비관적락_테스트() throws InterruptedException {
-
-        // 테스트할 좌석 ID 및 사용자 ID
-        List<Long> seatIds = List.of(1L, 2L, 3L);
-        long[] userIds = {1,2,3,4};
-        int totalUsers = userIds.length;
-        Long concertId = 1L;
-        Long scheduleId = 1L;
-
-        // 동시성 테스트를 위한 스레드 풀
-        ExecutorService executorService = Executors.newFixedThreadPool(totalUsers);
-        CountDownLatch latch = new CountDownLatch(totalUsers);
-
-        // 사용자 1 예약 시도
-        for(int i = 0; i < totalUsers; i++) {
-            int finalI = i;
-            executorService.execute(() -> {
-                try {
-                    reservationService.reserveConcert(userIds[finalI], concertId, scheduleId, seatIds);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }finally {
-                    latch.countDown();
-                }
-            });
-        }
-
-        latch.await(); // 모든 스레드가 작업을 완료할 때까지 대기
-
-        // 예약 완료된 좌석 상태 확인
-        assertThat(reservationRepository.count()).isEqualTo(1);
-        assertThat(reservationItemRepository.count()).isEqualTo(seatIds.size());
-        for(long id : seatIds){
-            assertThat(seatRepository.findById(id).get().getStatus()).isEqualTo(SeatStatus.RESERVED);
-        }
-
-    }
-
-
-    @Test
+    @DisplayName("1. Thread 방식 - 예약 동시성 테스트")
     public void testConcurrentReservation() throws InterruptedException {
 
         Long userAId = 1L;
@@ -98,7 +52,6 @@ public class ReservationConcurrencyTest {
         Long concertId = 1L;
         Long scheduleId = 1L;
         List<Long> seatIds = List.of(1L, 2L);
-
 
         // 사용자 A와 B의 예약 시도
         Runnable userA = () -> {
@@ -132,5 +85,55 @@ public class ReservationConcurrencyTest {
         }
 
     }
+
+    @Test
+    @DisplayName("2. Executor 방식 - 예약 동시성 테스트")
+    @Transactional
+    public void 동시성_좌석예약_비관적락_테스트() throws InterruptedException {
+
+        // 테스트할 좌석 ID 및 사용자 ID
+        List<Long> seatIds = List.of(1L, 2L, 3L);
+//        long[] userIds = {1,2,3,4};
+        List<User> users = userRepository.findAll();
+        int totalUsers = users.size();
+        Long concertId = 1L;
+        Long scheduleId = 1L;
+
+        // 동시성 테스트를 위한 스레드 풀
+        ExecutorService executorService = Executors.newFixedThreadPool(totalUsers);
+        CountDownLatch latch = new CountDownLatch(totalUsers);
+
+        // 사용자 1 예약 시도
+        for (int i = 0; i < totalUsers; i++) {
+            for (User user : users) {
+                executorService.execute(() -> {
+                    try {
+                        reservationService.reserveConcert(user.getId(), concertId, scheduleId, seatIds);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+            }
+
+            latch.await(); // 모든 스레드가 작업을 완료할 때까지 대기
+
+            // 예약 완료된 좌석 상태 확인
+            assertThat(reservationRepository.count()).isEqualTo(1);
+
+            assertThat(reservationItemRepository.count()).isEqualTo(seatIds.size());
+            for (long id : seatIds) {
+                assertThat(seatRepository.findById(id).get().getStatus()).isEqualTo(SeatStatus.RESERVED);
+            }
+            //todo
+            // 비관락이 아니라면.. 먼저 진입한 userId가 자신이 선택한 좌석id로 최종적으로 예약에 성공한다는 보장이 없다..
+            // log를 찍는 것 외에 검증할 수 있는 방법이 없을까?
+
+
+        }
+    }
+
+
 
 }

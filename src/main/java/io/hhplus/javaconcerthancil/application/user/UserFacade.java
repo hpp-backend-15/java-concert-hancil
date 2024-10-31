@@ -79,7 +79,7 @@ public class UserFacade {
     @Retryable(
             retryFor = {OptimisticLockingFailureException.class, ObjectOptimisticLockingFailureException.class},
             maxAttempts = 10,
-            backoff = @Backoff(delay = 100)
+            backoff = @Backoff(delay = 500)
     )
     public ChargeResponse chargeWithOptimisticLock(long userId, ChargeRequest requestBody) {
 

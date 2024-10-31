@@ -28,15 +28,12 @@ public class UserController implements IUserController {
     private final UserFacade userFacade;
     private final RedissonClient redissonClient;
 
-
-    @PatchMapping("/{userId}/charge")
     @Override
     public ApiResponse<ChargeResponse> charge(Long userId, ChargeRequest requestBody) {
         log.info("requestBody: {}", requestBody);
         return ApiResponse.success(userFacade.charge(userId, requestBody));
     }
 
-    @PatchMapping("/{userId}/chargeWithOptimisticLock")
     @Override
     public ApiResponse<ChargeResponse> chargeWithOptimisticLock(Long userId, ChargeRequest requestBody) {
         log.info("requestBody: {}", requestBody);
@@ -44,7 +41,6 @@ public class UserController implements IUserController {
     }
 
 
-    @PatchMapping("/{userId}/chargeWithPessimisticLock")
     @Override
     public ApiResponse<ChargeResponse> chargeWithPessimisticLock(Long userId, ChargeRequest requestBody) {
         log.info("requestBody: {}", requestBody);
@@ -53,9 +49,8 @@ public class UserController implements IUserController {
 
 
     @Retryable(
-            retryFor = { InterruptedException.class }, // 리트라이할 예외 클래스
-            maxAttempts = 10, // 최대 재시도 횟수
-            backoff = @Backoff(delay = 100) // 지연 시간 설정 (100ms)
+            retryFor = { ApiException.class }, // 리트라이할 예외 클래스
+            maxAttempts = 10 // 최대 재시도 횟수
     )
     @Override
     public ApiResponse<ChargeResponse> chargeWithRedisLock(Long userId, ChargeRequest requestBody){
@@ -66,13 +61,15 @@ public class UserController implements IUserController {
 
         try {
             // 락 획득 시도
-            if (lock.tryLock(100, 100, TimeUnit.MILLISECONDS)) {
+            if (lock.tryLock(500, 100, TimeUnit.MILLISECONDS)) {
                 charge = userFacade.charge(userId, requestBody);
             } else {
                 log.info("이미 처리 중인 요청입니다. 락을 획득할 수 없습니다.");
+                throw new ApiException(ErrorCode.E409, LogLevel.ERROR, "락 획득 실패로 인한 재시도");
             }
         } catch (InterruptedException e) {
-            throw new ApiException(ErrorCode.E409, LogLevel.ERROR);
+            Thread.currentThread().interrupt();
+            throw new ApiException(ErrorCode.E500, LogLevel.ERROR, "스레드 인터럽트 발생");
         } finally {
             if (lock.isLocked() && lock.isHeldByCurrentThread()) {
                 lock.unlock(); // 락 해제
@@ -83,28 +80,8 @@ public class UserController implements IUserController {
     }
 
     @Override
-    @GetMapping("/{userId}")
     public ApiResponse<UserBalanceResponse> getUserBalance(Long userId) {
         return ApiResponse.success(userFacade.getUserBalance(userId));
     }
-
-
-//    @PatchMapping("/{userId}/charge")
-//    public ApiResponse<ChargeResponse> charge(
-//            @PathVariable("userId") Long userId,
-//            @RequestBody ChargeRequest requestBody
-//    ){
-//        log.info("requestBody: {}", requestBody);
-//        return ApiResponse.success(userFacade.charge(userId, requestBody));
-//    }
-//
-//
-//    @GetMapping("/{userId}")
-//    public ApiResponse<UserBalanceResponse> getUserBalance(
-//            @PathVariable("userId") Long userId
-//    ){
-//        return ApiResponse.success(userFacade.getUserBalance(userId));
-//    }
-
 
 }

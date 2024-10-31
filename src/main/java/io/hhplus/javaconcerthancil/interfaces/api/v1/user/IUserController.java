@@ -11,23 +11,24 @@ import org.springframework.web.bind.annotation.*;
         description =   "")
 public interface IUserController {
 
-    @PatchMapping("/{userId}/charge")
+//    @PatchMapping("/{userId}/charge")
     ApiResponse<ChargeResponse> charge(
             @PathVariable("userId") Long userId,
             @RequestBody ChargeRequest requestBody
     );
 
-    @PatchMapping("/{userId}/chargeWithOptimisticLock")
+//    @PatchMapping("/{userId}/chargeWithOptimisticLock")
+    @PatchMapping("/{userId}/charge")
     ApiResponse<ChargeResponse> chargeWithOptimisticLock(
             @PathVariable("userId") Long userId,
             @RequestBody ChargeRequest requestBody);
 
-    @PatchMapping("/{userId}/chargeWithPessimisticLock")
+//    @PatchMapping("/{userId}/chargeWithPessimisticLock")
     ApiResponse<ChargeResponse> chargeWithPessimisticLock(
             @PathVariable("userId") Long userId,
             @RequestBody ChargeRequest requestBody);
 
-    @PatchMapping("/{userId}/chargeWithRedisLock")
+//    @PatchMapping("/{userId}/chargeWithRedisLock")
     ApiResponse<ChargeResponse> chargeWithRedisLock(
             @PathVariable("userId") Long userId,
             @RequestBody ChargeRequest requestBody) throws InterruptedException;

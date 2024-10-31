@@ -11,6 +11,7 @@ import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
 import io.hhplus.javaconcerthancil.interfaces.api.common.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
@@ -28,16 +30,16 @@ public class ReservationService {
     @Transactional
     public Reservation reserveConcert(Long userId, Long concertId, Long scheduleId, List<Long> seatIds) {
 
+        log.info("[JHC]초기id: {}" , userId);
         // 1-1. 사용자 확인
-        User user = userRepository.findById(userId)
+//        User user = userRepository.findById(userId)
+        User user = userRepository.findByIdWithLock(userId)
                 .orElseThrow(() -> new ApiException(ErrorCode.E404, LogLevel.INFO, "User not found"));
 
         // 1-2 예약 상태 초기화
         Reservation reservation = new Reservation(user);
 
-
         // 2. 좌석 유효성 검사
-//        List<Seat> seats = seatRepository.findAllById(seatIds);
         List<Seat> seats = seatRepository.findAllByIdForUpdate(seatIds);
 
         // 좌석이 없거나, 상태가 AVAILABLE이 아닌 좌석이 있는지 확인
@@ -61,6 +63,7 @@ public class ReservationService {
 
         Reservation savedReservation = reservationRepository.save(reservation); // 예약 먼저 저장
 
+        log.info("[JHC]최종id: {}" , savedReservation.getUser().getId());
         paymentRepository.save(new Payment(savedReservation));
         return savedReservation;
     }
