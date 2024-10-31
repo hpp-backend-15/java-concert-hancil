@@ -6,6 +6,7 @@ import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import io.hhplus.javaconcerthancil.interfaces.api.v1.user.request.ChargeRequest;
 import io.hhplus.javaconcerthancil.support.DummyDataLoaderService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +35,8 @@ public class UserBalanceChargeIntegrationTest {
     }
 
     @Test
-    void 동시_충전() throws InterruptedException {
+    @DisplayName("동시성제어를 하지않는다면, 데이터의 정합성이 떨어질 것이다.")
+    void concurrencyTest() throws InterruptedException {
 
         Long[] userIds = {1L,2L,3L,1L,1L,1L,3L,4L,2L,1L}; // 테스트 사용자 ID
         ChargeRequest request = new ChargeRequest(1000); // 충전할 금액
@@ -64,9 +66,9 @@ public class UserBalanceChargeIntegrationTest {
         User user2 = userRepository.findById(2L).orElseThrow();
         User user3 = userRepository.findById(3L).orElseThrow();
         User user4 = userRepository.findById(4L).orElseThrow();
-        assertThat(user1.getBalance()).isEqualTo(5*1000);
-        assertThat(user2.getBalance()).isEqualTo(2*1000);
-        assertThat(user3.getBalance()).isEqualTo(2*1000);
+        assertThat(user1.getBalance()).isNotEqualTo(5*1000);
+        assertThat(user2.getBalance()).isNotEqualTo(2*1000);
+        assertThat(user3.getBalance()).isNotEqualTo(2*1000);
         assertThat(user4.getBalance()).isEqualTo(1*1000);
 
 
