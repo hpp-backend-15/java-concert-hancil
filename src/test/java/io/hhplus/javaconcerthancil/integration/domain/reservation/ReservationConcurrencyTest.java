@@ -3,12 +3,11 @@ package io.hhplus.javaconcerthancil.integration.domain.reservation;
 import io.hhplus.javaconcerthancil.domain.concert.Seat;
 import io.hhplus.javaconcerthancil.domain.concert.SeatRepository;
 import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
-import io.hhplus.javaconcerthancil.domain.reservation.ReservationItemRepository;
-import io.hhplus.javaconcerthancil.domain.reservation.ReservationRepository;
-import io.hhplus.javaconcerthancil.domain.reservation.ReservationService;
+import io.hhplus.javaconcerthancil.domain.reservation.*;
 import io.hhplus.javaconcerthancil.domain.user.User;
 import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -92,8 +92,7 @@ public class ReservationConcurrencyTest {
     public void 동시성_좌석예약_비관적락_테스트() throws InterruptedException {
 
         // 테스트할 좌석 ID 및 사용자 ID
-        List<Long> seatIds = List.of(1L, 2L, 3L);
-//        long[] userIds = {1,2,3,4};
+        List<List<Long>> seatIds = List.of(List.of(1L, 2L, 3L), List.of(2L,3L,10L), List.of(3L,2L,6L), List.of(1L,2L,4L));
         List<User> users = userRepository.findAll();
         int totalUsers = users.size();
         Long concertId = 1L;
@@ -104,11 +103,10 @@ public class ReservationConcurrencyTest {
         CountDownLatch latch = new CountDownLatch(totalUsers);
 
         // 사용자 1 예약 시도
-        for (int i = 0; i < totalUsers; i++) {
             for (User user : users) {
                 executorService.execute(() -> {
                     try {
-                        reservationService.reserveConcert(user.getId(), concertId, scheduleId, seatIds);
+                        reservationService.reserveConcert(user.getId(), concertId, scheduleId, seatIds.get(user.getId().intValue() -1));
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
@@ -121,19 +119,18 @@ public class ReservationConcurrencyTest {
 
             // 예약 완료된 좌석 상태 확인
             assertThat(reservationRepository.count()).isEqualTo(1);
+            assertThat(reservationItemRepository.count()).isEqualTo(seatIds.get(0).size());
 
-            assertThat(reservationItemRepository.count()).isEqualTo(seatIds.size());
-            for (long id : seatIds) {
-                assertThat(seatRepository.findById(id).get().getStatus()).isEqualTo(SeatStatus.RESERVED);
-            }
-            //todo
-            // 비관락이 아니라면.. 먼저 진입한 userId가 자신이 선택한 좌석id로 최종적으로 예약에 성공한다는 보장이 없다..
-            // log를 찍는 것 외에 검증할 수 있는 방법이 없을까?
-
-
-        }
+            List<Reservation> all = reservationRepository.findAll();
+            for(Reservation reservation : all){
+                List<ReservationItem> items = reservation.getItems();
+                    for(ReservationItem item : items){
+                        List<Long> longs = seatIds.get(reservation.getUser().getId().intValue() - 1);
+                        assertTrue(longs.contains(item.getSeat().getId()));
+                    }
+                }
     }
 
-
-
 }
+
+
