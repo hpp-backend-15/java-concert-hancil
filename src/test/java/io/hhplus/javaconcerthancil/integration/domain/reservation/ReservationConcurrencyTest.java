@@ -117,18 +117,21 @@ public class ReservationConcurrencyTest {
 
             latch.await(); // 모든 스레드가 작업을 완료할 때까지 대기
 
-            // 예약 완료된 좌석 상태 확인
-            assertThat(reservationRepository.count()).isEqualTo(1);
-            assertThat(reservationItemRepository.count()).isEqualTo(seatIds.get(0).size());
+        // 예약 데이터는 1개만 생성되어야 함
+        assertThat(reservationRepository.count()).isEqualTo(1);
 
-            List<Reservation> all = reservationRepository.findAll();
-            for(Reservation reservation : all){
-                List<ReservationItem> items = reservation.getItems();
-                    for(ReservationItem item : items){
-                        List<Long> longs = seatIds.get(reservation.getUser().getId().intValue() - 1);
-                        assertTrue(longs.contains(item.getSeat().getId()));
-                    }
-                }
+        //예약한 좌석수에 맞게 저장이 되어야 함
+        assertThat(reservationItemRepository.count()).isEqualTo(seatIds.get(0).size());
+
+        //예약정보가 요청과 일치하는지에 대한 검증
+        List<Reservation> all = reservationRepository.findAll();
+        for(Reservation reservation : all){
+            List<ReservationItem> items = reservation.getItems();
+            for(ReservationItem item : items){
+                List<Long> longs = seatIds.get(reservation.getUser().getId().intValue() - 1);
+                assertTrue(longs.contains(item.getSeat().getId()));
+            }
+        }
     }
 
 }
