@@ -25,6 +25,13 @@ repositories {
 
 dependencies {
 
+
+	// https://java.testcontainers.org/quickstart/junit_5_quickstart/
+	// 1. Add Testcontainers as a test-scoped dependency
+	testImplementation "org.testcontainers:testcontainers:1.20.3"
+	testImplementation "org.testcontainers:junit-jupiter:1.20.3"
+
+
 	// https://mvnrepository.com/artifact/org.redisson/redisson-spring-boot-starter
 	implementation 'org.redisson:redisson-spring-boot-starter:3.37.0'
 
