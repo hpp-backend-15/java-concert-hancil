@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+//@Service
 @RequiredArgsConstructor
 @Slf4j
 public class SchedulerService {
