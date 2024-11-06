@@ -5,17 +5,18 @@ import io.hhplus.javaconcerthancil.domain.user.User;
 import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersion;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersionRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-//@Component
+@Component
 @RequiredArgsConstructor
 public class DummyDataLoader implements CommandLineRunner {
 
-    private final ConcertRepository concertRepository;
+    private final ConcertJpaRepository concertJpaRepository;
     private final UserRepository userRepository;
     private final UserWithVersionRepository userWithVersionRepository;
 
@@ -57,6 +58,6 @@ public class DummyDataLoader implements CommandLineRunner {
         concert.addSchedule(concertSchedule1);
         concert.addSchedule(concertSchedule2);
         concert.addSchedule(concertSchedule3);
-        concertRepository.save(concert);
+        concertJpaRepository.save(concert);
     }
 }

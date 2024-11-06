@@ -1,5 +1,6 @@
 package io.hhplus.javaconcerthancil.domain.concert;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
 import io.hhplus.javaconcerthancil.interfaces.api.common.ErrorCode;
 import jakarta.persistence.*;
@@ -27,6 +28,7 @@ public class ConcertSchedule {
     @JoinColumn(name = "concert_id")
     private Concert concert;
 
+    @JsonIgnore // 순환 참조 방지
     @OneToMany(mappedBy = "concertSchedule", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Seat> seats = new ArrayList<>();
 

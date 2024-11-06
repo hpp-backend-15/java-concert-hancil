@@ -5,7 +5,8 @@ import io.hhplus.javaconcerthancil.domain.user.User;
 import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersion;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersionRepository;
-import jakarta.transaction.Transactional;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertScheduleJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DummyDataLoaderService {
 
-    private final ConcertRepository concertRepository;
-    private final ConcertScheduleRepository scheduleRepository;
+    private final ConcertJpaRepository concertJpaRepository;
+    private final ConcertScheduleJpaRepository scheduleRepository;
     private final SeatRepository seatRepository;
     private final UserRepository userRepository;
     private final UserWithVersionRepository userWithVersionRepository;
@@ -40,7 +41,7 @@ public class DummyDataLoaderService {
 
         // 콘서트 생성
         Concert concert = new Concert("Crush콘서트", "크러쉬의 라이브 콘서트입니다.");
-        concertRepository.save(concert);
+        concertJpaRepository.save(concert);
 
         // 콘서트 일정 생성
         List<ConcertSchedule> schedules = new ArrayList<>();

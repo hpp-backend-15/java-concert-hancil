@@ -7,6 +7,7 @@ import io.hhplus.javaconcerthancil.domain.payments.PaymentStatus;
 import io.hhplus.javaconcerthancil.domain.reservation.*;
 import io.hhplus.javaconcerthancil.domain.user.User;
 import io.hhplus.javaconcerthancil.domain.user.UserRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ReservationServiceIntegerationTest {
 
     @Autowired
-    private ConcertRepository concertRepository;
+    private ConcertJpaRepository concertJpaRepository;
 
     @Autowired
     private SeatRepository seatRepository;
@@ -67,7 +68,7 @@ public class ReservationServiceIntegerationTest {
         concert.addSchedule(concertSchedule1);
         concert.addSchedule(concertSchedule2);
         concert.addSchedule(concertSchedule3);
-        concertRepository.save(concert);
+        concertJpaRepository.save(concert);
 
 
     }

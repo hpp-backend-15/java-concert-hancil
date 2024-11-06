@@ -1,6 +1,8 @@
 package io.hhplus.javaconcerthancil.unit.domain.concert;
 
 import io.hhplus.javaconcerthancil.domain.concert.*;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertScheduleJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,10 +25,10 @@ import static org.mockito.Mockito.when;
 public class ConcertServiceUnitTest {
 
     @Mock
-    private ConcertRepository concertRepository;  // 의존성 모킹
+    private ConcertJpaRepository concertJpaRepository;  // 의존성 모킹
 
     @Mock
-    private ConcertScheduleRepository concertScheduleRepository;
+    private ConcertScheduleJpaRepository concertScheduleJpaRepository;
 
     @InjectMocks
     private ConcertService concertService;  // 테스트할 서비스 클래스
@@ -55,7 +57,7 @@ public class ConcertServiceUnitTest {
 
         concert.setSchedules(Arrays.asList(schedule1, schedule2));
 
-        given(concertRepository.findById(concertId)).willReturn(Optional.of(concert));  // 모킹된 동작
+        given(concertJpaRepository.findById(concertId)).willReturn(Optional.of(concert));  // 모킹된 동작
 
         //when
         Concert scheduledConcert = concertService.getScheduledConcert(concertId);
@@ -85,7 +87,7 @@ public class ConcertServiceUnitTest {
         Long scheduleId = 1L;
 
         // 모킹: concertId가 없을 때 예외 발생
-        when(concertRepository.findById(concertId)).thenThrow(new IllegalArgumentException("Invalid concertId"));
+        when(concertJpaRepository.findById(concertId)).thenThrow(new IllegalArgumentException("Invalid concertId"));
 
         //when - then
         assertThrows(IllegalArgumentException.class, () -> concertService.getConcertSeats(concertId, scheduleId));
@@ -100,8 +102,8 @@ public class ConcertServiceUnitTest {
 
         // 모킹: scheduleId가 없을 때 예외 발생
         Concert concert = new Concert("Test Concert", "Test Concert");
-        given(concertRepository.findById(concertId)).willReturn(Optional.of(concert));
-        given(concertScheduleRepository.findById(concertId)).willThrow(new IllegalArgumentException("ConcertSchedule not found"));
+        given(concertJpaRepository.findById(concertId)).willReturn(Optional.of(concert));
+        given(concertScheduleJpaRepository.findById(concertId)).willThrow(new IllegalArgumentException("ConcertSchedule not found"));
 
         //when - then
         assertThrows(IllegalArgumentException.class, () -> concertService.getConcertSeats(concertId, scheduleId));
@@ -129,8 +131,8 @@ public class ConcertServiceUnitTest {
         concert.setSchedules(Collections.singletonList(schedule));
         schedule.setSeats(seats);
 
-        given(concertRepository.findById(concertId)).willReturn(Optional.of(concert));
-        given(concertScheduleRepository.findById(scheduleId)).willReturn(Optional.of(schedule));
+        given(concertJpaRepository.findById(concertId)).willReturn(Optional.of(concert));
+        given(concertScheduleJpaRepository.findById(scheduleId)).willReturn(Optional.of(schedule));
 
         //when
         List<Seat> concertSeats = concertService.getConcertSeats(concertId, scheduleId);
