@@ -43,23 +43,31 @@ public class WaitingQueueRedisRepository {
         return waitingQueueRedisTemplate.opsForZSet().range(WAITING_TOKENS_KEY, start, end);
     }
 
-    public Long delete(Set<String> tokens) {
-        return waitingQueueRedisTemplate.opsForZSet().remove(WAITING_TOKENS_KEY, tokens.toArray());
+    public void deleteWaitingTokens(Set<String> tokens) {
+        waitingQueueRedisTemplate.opsForZSet().remove(WAITING_TOKENS_KEY, tokens.toArray());
     }
 
     public Set<String> getActiveKeys(){
-        return waitingQueueRedisTemplate.keys("ACTIVE_*");
+        return waitingQueueRedisTemplate.keys(ACTIVE_TOKENS_KEY + "*");
     }
-
 
     public void addActiveToken(String token) {
-        waitingQueueRedisTemplate.opsForValue().set(ACTIVE_TOKENS_KEY+token, QueueStatus.PROGRESS.toString(), Duration.ofMinutes(30L));
+        waitingQueueRedisTemplate.opsForValue().set(ACTIVE_TOKENS_KEY+token, QueueStatus.PROGRESS.toString(), Duration.ofMinutes(10L));
     }
 
-    public boolean isInActivationQueue(String token) {
+    public void isInActivationQueue(String token) {
         String targetToken = validateToken(token);
         String key = ACTIVE_TOKENS_KEY + targetToken;
-        return Boolean.TRUE.equals(waitingQueueRedisTemplate.hasKey(key));
+
+        Boolean isInActivationQueue = waitingQueueRedisTemplate.hasKey(key);
+        if(Boolean.FALSE.equals(isInActivationQueue)){
+            throw new ApiException(ErrorCode.E001, LogLevel.INFO, "token: " + token);
+        }
+    }
+
+    public void deleteActiveToken(String token) {
+        String targetToken = validateToken(token);
+        waitingQueueRedisTemplate.delete(targetToken);
     }
 
     private static String validateToken(String token) {
@@ -72,7 +80,6 @@ public class WaitingQueueRedisRepository {
         if (splitToken.length < 2 && !WAITING_TOKENS_KEY.equals(splitToken[0])) {
             throw new ApiException(ErrorCode.E006, LogLevel.ERROR, "유효하지 않은 요청입니다.");
         }
-
         return splitToken[1];
     }
 
