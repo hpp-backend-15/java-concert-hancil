@@ -1,13 +1,9 @@
 package io.hhplus.javaconcerthancil.domain.waitingqueue;
 
-import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.WaitingQueueRedisRepository;
-import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
-import io.hhplus.javaconcerthancil.interfaces.api.common.ErrorCode;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.QueueTokenRedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.logging.LogLevel;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
@@ -18,24 +14,50 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class WaitingQueueService {
 
-//    private final WaitingQueueTokenProvider tokenProvider;
     private final WaitingQueueRepository queueRepository;
-    private final WaitingQueueRedisRepository waitingQueueRedisRepository;
+    private final QueueTokenRedisRepository queueTokenRedisRepository;
+
     public String issueTokenWithRedis(Long userId) {
-        return waitingQueueRedisRepository.add(userId);
+        return queueTokenRedisRepository.saveWaitingQueueToken(userId);
     }
 
     public Long getWaitingNumberWithRedis(String token) {
-        Long rank = waitingQueueRedisRepository.rank(token);
+        Long rank = queueTokenRedisRepository.getWaitingNumber(token);
         if(rank == 0){
-            waitingQueueRedisRepository.isInActivationQueue(token);
+            queueTokenRedisRepository.isInActivationQueue(token);
         }
         return rank;
     }
 
     public void ensureTokenIsActiveWithRedis(String token) {
-        waitingQueueRedisRepository.isInActivationQueue(token);
+        queueTokenRedisRepository.isInActivationQueue(token);
 
+    }
+
+    public void periodicallyEnterWaitingQueue() {
+
+        // 임시
+        final Long maxActiveSize = 50L;
+
+        long currentActiveSize = queueTokenRedisRepository.getActiveKeys().size();
+        long availableSlots = maxActiveSize - currentActiveSize;
+
+        // 50명이 이미 활성화되어 있는 경우, 추가로 이동할 필요 없음
+        if (availableSlots <= 0) {
+            log.info("현재 활성화 큐에 50명이 모두 활성화되어 있습니다.");
+            return;
+        }
+        // 전체 사이즈를 조회후
+        Set<String> range = queueTokenRedisRepository.getWaitingMembers(0, -1);
+
+        // 대기열 큐에서 가져올 수 있는 최대 토큰 수 계산
+        Set<String> waitingTokens = queueTokenRedisRepository.getWaitingMembers(0, Math.min(availableSlots - 1, range.size() - 1));
+        if (!waitingTokens.isEmpty()) {
+            // 대기열에서 토큰 제거 및 활성화 큐에 추가
+            queueTokenRedisRepository.deleteWaitingTokens(waitingTokens);
+            waitingTokens.forEach(token -> queueTokenRedisRepository.activateTokenFromWaitingQueue(token));
+            log.info("대기열에서 {}명의 사용자를 활성화했습니다. 현재 활성화 큐 크기: {}", waitingTokens.size(), currentActiveSize + waitingTokens.size());
+        }
     }
 
     public Optional<WaitingQueue> getTokenByUserId(Long userId) {
@@ -68,33 +90,5 @@ public class WaitingQueueService {
         queueItem.setStatus(QueueStatus.EXPIRED);
         queueRepository.save(queueItem);
     }
-
-    public void periodicallyEnterWaitingQueue() {
-
-        // 임시
-        final Long maxActiveSize = 50L;
-
-        long currentActiveSize = waitingQueueRedisRepository.getActiveKeys().size();
-        long availableSlots = maxActiveSize - currentActiveSize;
-
-        // 50명이 이미 활성화되어 있는 경우, 추가로 이동할 필요 없음
-        if (availableSlots <= 0) {
-            log.info("현재 활성화 큐에 50명이 모두 활성화되어 있습니다.");
-            return;
-        }
-        // 전체 사이즈를 조회후
-        Set<String> range = waitingQueueRedisRepository.range(0, -1);
-
-        // 대기열 큐에서 가져올 수 있는 최대 토큰 수 계산
-        Set<String> waitingTokens = waitingQueueRedisRepository.range(0, Math.min(availableSlots - 1, range.size() - 1));
-        if (!waitingTokens.isEmpty()) {
-            // 대기열에서 토큰 제거 및 활성화 큐에 추가
-            waitingQueueRedisRepository.deleteWaitingTokens(waitingTokens);
-            waitingTokens.forEach(token -> waitingQueueRedisRepository.addActiveToken(token));
-            log.info("대기열에서 {}명의 사용자를 활성화했습니다. 현재 활성화 큐 크기: {}", waitingTokens.size(), currentActiveSize + waitingTokens.size());
-        }
-
-    }
-
 
 }

@@ -16,7 +16,7 @@ import java.util.Set;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class WaitingQueueRedisRepository {
+public class QueueTokenRedisRepositoryImpl implements QueueTokenRedisRepository {
 
     private final static String WAITING_TOKENS_KEY = "WAITING";
     private final static String ACTIVE_TOKENS_KEY = "ACTIVE_";
@@ -24,37 +24,44 @@ public class WaitingQueueRedisRepository {
     @Qualifier("waitingQueueRedisTemplate")
     private final RedisTemplate<String, String> waitingQueueRedisTemplate;
 
-    public String add(Long userId) {
+    @Override
+    public String saveWaitingQueueToken(Long userId) {
         waitingQueueRedisTemplate.opsForZSet().add(WAITING_TOKENS_KEY, "user:" + userId, System.currentTimeMillis());
         return WAITING_TOKENS_KEY + "_" + "user:" + userId;
     }
 
-    // 0부터 시작하므로 1을 더해줌
-    public Long rank(String token){
+    @Override
+    public Long getWaitingNumber(String token) {
         String targetToken = validateToken(token);
         Long rank = waitingQueueRedisTemplate.opsForZSet().rank(WAITING_TOKENS_KEY, targetToken);
         if(rank == null || rank == 0) {
             return 0L;
         }
+        // 0부터 시작하므로 1을 더해줌
         return rank + 1;
     }
 
-    public Set<String> range(long start, long end) {
+    @Override
+    public Set<String> getWaitingMembers(long start, long end) {
         return waitingQueueRedisTemplate.opsForZSet().range(WAITING_TOKENS_KEY, start, end);
     }
 
+    @Override
     public void deleteWaitingTokens(Set<String> tokens) {
         waitingQueueRedisTemplate.opsForZSet().remove(WAITING_TOKENS_KEY, tokens.toArray());
     }
 
+    @Override
     public Set<String> getActiveKeys(){
         return waitingQueueRedisTemplate.keys(ACTIVE_TOKENS_KEY + "*");
     }
 
-    public void addActiveToken(String token) {
+    @Override
+    public void activateTokenFromWaitingQueue(String token) {
         waitingQueueRedisTemplate.opsForValue().set(ACTIVE_TOKENS_KEY+token, QueueStatus.PROGRESS.toString(), Duration.ofMinutes(10L));
     }
 
+    @Override
     public void isInActivationQueue(String token) {
         String targetToken = validateToken(token);
         String key = ACTIVE_TOKENS_KEY + targetToken;
@@ -65,9 +72,20 @@ public class WaitingQueueRedisRepository {
         }
     }
 
+    @Override
     public void deleteActiveToken(String token) {
         String targetToken = validateToken(token);
         waitingQueueRedisTemplate.delete(targetToken);
+    }
+
+    @Override
+    public void deleteAll() {
+        Set<String> keys = waitingQueueRedisTemplate.keys("*");
+        if (keys != null) {
+            for (String key : keys) {
+                waitingQueueRedisTemplate.delete(key);
+            }
+        }
     }
 
     private static String validateToken(String token) {
@@ -83,14 +101,7 @@ public class WaitingQueueRedisRepository {
         return splitToken[1];
     }
 
-    public void deleteAll() {
-        Set<String> keys = waitingQueueRedisTemplate.keys("*");
-        if (keys != null) {
-            for (String key : keys) {
-                waitingQueueRedisTemplate.delete(key);
-            }
-        }
-    }
+
 
 }
 

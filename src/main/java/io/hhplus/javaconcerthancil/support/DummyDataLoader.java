@@ -6,7 +6,7 @@ import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersion;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersionRepository;
 import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertJpaRepository;
-import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.WaitingQueueRedisRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.QueueTokenRedisRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class DummyDataLoader implements CommandLineRunner {
     private final ConcertJpaRepository concertJpaRepository;
     private final UserRepository userRepository;
     private final UserWithVersionRepository userWithVersionRepository;
-    private final WaitingQueueRedisRepository waitingQueueRedisRepository;
+    private final QueueTokenRedisRepositoryImpl waitingQueueRedisRepository;
 
     @Override
     public void run(String... args) throws Exception {
