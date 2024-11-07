@@ -3,6 +3,7 @@ package io.hhplus.javaconcerthancil.domain.waitingqueue;
 import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.ActiveQueueRedisRepository;
 import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.WaitingQueueRedisRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WaitingQueueService {
@@ -61,11 +63,14 @@ public class WaitingQueueService {
         Set<String> range = waitingQueueRedisRepository.range(0, -1);
 
         // 50명만 허용
-        Set<String> getWaitingTokenRange = waitingQueueRedisRepository.range(0, range.size() - maxWaitingSize -1);
+        long targetRange = range.size() - maxWaitingSize -1 >= 0 ? range.size() - maxWaitingSize -1 : -1;
+        Set<String> getWaitingTokenRange = waitingQueueRedisRepository.range(0, targetRange);
+        if(!getWaitingTokenRange.isEmpty()){
+            waitingQueueRedisRepository.delete(getWaitingTokenRange);
+            getWaitingTokenRange.forEach(token -> {
+                activeQueueRedisRepository.addActiveToken(token);
+            });
+        }
 
-        waitingQueueRedisRepository.delete(getWaitingTokenRange);
-        getWaitingTokenRange.forEach(token -> {
-            activeQueueRedisRepository.addActiveToken(token);
-        });
     }
 }
