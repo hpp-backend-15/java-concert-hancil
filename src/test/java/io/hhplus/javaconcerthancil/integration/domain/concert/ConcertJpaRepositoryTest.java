@@ -1,8 +1,8 @@
 package io.hhplus.javaconcerthancil.integration.domain.concert;
 
 import io.hhplus.javaconcerthancil.domain.concert.*;
-import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertJpaRepository;
-import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertScheduleJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertScheduleJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

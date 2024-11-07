@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.infrastructure.persistence;
+package io.hhplus.javaconcerthancil.infrastructure.persistence.concert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hhplus.javaconcerthancil.domain.concert.Concert;
@@ -8,7 +8,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Repository

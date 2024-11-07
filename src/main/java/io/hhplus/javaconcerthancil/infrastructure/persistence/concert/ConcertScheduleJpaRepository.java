@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.infrastructure.persistence;
+package io.hhplus.javaconcerthancil.infrastructure.persistence.concert;
 
 import io.hhplus.javaconcerthancil.domain.concert.ConcertSchedule;
 import jakarta.persistence.LockModeType;

@@ -20,16 +20,6 @@ public class WaitingQueueFacade {
     private static final int MAX = 50;
 
     public IssueTokenResponse issueToken(Long userId){
-
-        //1. queue에 해당 유저의 토큰이 존재할 경우
-        // 기존 대기열 토큰을 반환한다.
-        Optional<WaitingQueue> tokenByUserId = waitingQueueService.getTokenByUserId(userId);
-        if(tokenByUserId.isPresent()){
-            return new IssueTokenResponse(tokenByUserId.get().getToken());
-        }
-
-        //2. 대기열 토큰이 존재하지 않을 경우
-        // 신규 대기열 토큰을 반환한다.
         return new IssueTokenResponse(
                 waitingQueueService.issueToken(userId)
         );

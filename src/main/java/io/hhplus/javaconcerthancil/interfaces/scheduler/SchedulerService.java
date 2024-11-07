@@ -8,11 +8,11 @@ import io.hhplus.javaconcerthancil.domain.payments.PaymentRepository;
 import io.hhplus.javaconcerthancil.domain.payments.PaymentStatus;
 import io.hhplus.javaconcerthancil.domain.reservation.*;
 import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueueRepository;
+import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueueService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +28,8 @@ public class SchedulerService {
     private final ReservationRepository reservationRepository;
     private final ReservationItemRepository reservationItemRepository;
     private final PaymentRepository paymentRepository;
+    private WaitingQueueService waitingQueueService;
+
 
     @Scheduled(fixedDelay = 5 * 1000)
     @Transactional
@@ -73,5 +75,10 @@ public class SchedulerService {
         log.info("{}개의 예약건들이 만료되었습니다.",expiredReservations.size());
     }
 
+
+    @Scheduled(fixedDelay = 1000)
+    public void enteringUserQueueWithRedis() {
+        waitingQueueService.periodicallyEnterWaitingQueue();
+    }
 
 }

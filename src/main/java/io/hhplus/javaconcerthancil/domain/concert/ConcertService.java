@@ -1,7 +1,5 @@
 package io.hhplus.javaconcerthancil.domain.concert;
 
-import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertJpaRepository;
-import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertScheduleJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

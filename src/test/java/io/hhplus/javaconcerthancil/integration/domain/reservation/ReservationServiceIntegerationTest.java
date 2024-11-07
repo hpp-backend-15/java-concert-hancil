@@ -7,7 +7,7 @@ import io.hhplus.javaconcerthancil.domain.payments.PaymentStatus;
 import io.hhplus.javaconcerthancil.domain.reservation.*;
 import io.hhplus.javaconcerthancil.domain.user.User;
 import io.hhplus.javaconcerthancil.domain.user.UserRepository;
-import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

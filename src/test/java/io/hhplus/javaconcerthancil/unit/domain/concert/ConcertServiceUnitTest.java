@@ -1,8 +1,8 @@
 package io.hhplus.javaconcerthancil.unit.domain.concert;
 
 import io.hhplus.javaconcerthancil.domain.concert.*;
-import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertJpaRepository;
-import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertScheduleJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertScheduleJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

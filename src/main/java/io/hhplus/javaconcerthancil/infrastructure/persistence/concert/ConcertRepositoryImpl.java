@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.infrastructure.persistence;
+package io.hhplus.javaconcerthancil.infrastructure.persistence.concert;
 
 import io.hhplus.javaconcerthancil.domain.concert.Concert;
 import io.hhplus.javaconcerthancil.domain.concert.ConcertRepository;
@@ -6,9 +6,6 @@ import io.hhplus.javaconcerthancil.domain.concert.ConcertSchedule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Repository

@@ -1,28 +1,25 @@
 package io.hhplus.javaconcerthancil.domain.waitingqueue;
 
+import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.ActiveQueueRedisRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.WaitingQueueRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class WaitingQueueService {
 
-    private final WaitingQueueTokenProvider tokenProvider;
+//    private final WaitingQueueTokenProvider tokenProvider;
     private final WaitingQueueRepository queueRepository;
-
+    private final WaitingQueueRedisRepository waitingQueueRedisRepository;
+    private final ActiveQueueRedisRepository activeQueueRedisRepository;
     public String issueToken(Long userId) {
-        //1. 토큰을 발급한다.
-        String queueToken = tokenProvider.createQueueToken();
-
-        //2. 토큰을 저장한다.
-        WaitingQueue waitingQueue = new WaitingQueue(userId, queueToken);
-        queueRepository.save(waitingQueue);
-        //3. 저장결과를 반환한다
-        return queueToken;
+        return waitingQueueRedisRepository.add(userId);
     }
 
     public Optional<WaitingQueue> getTokenByUserId(Long userId) {
@@ -54,5 +51,21 @@ public class WaitingQueueService {
         WaitingQueue queueItem = queueRepository.findByToken(token);
         queueItem.setStatus(QueueStatus.EXPIRED);
         queueRepository.save(queueItem);
+    }
+
+    public void periodicallyEnterWaitingQueue() {
+        // 임시
+        final Long maxWaitingSize = 50L;
+
+        // 전체 사이즈를 조회후
+        Set<String> range = waitingQueueRedisRepository.range(0, -1);
+
+        // 50명만 허용
+        Set<String> getWaitingTokenRange = waitingQueueRedisRepository.range(0, range.size() - maxWaitingSize -1);
+
+        waitingQueueRedisRepository.delete(getWaitingTokenRange);
+        getWaitingTokenRange.forEach(token -> {
+            activeQueueRedisRepository.addActiveToken(token);
+        });
     }
 }

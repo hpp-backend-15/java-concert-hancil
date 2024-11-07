@@ -1,6 +1,6 @@
 package io.hhplus.javaconcerthancil.domain.reservation;
 
-import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertScheduleJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertScheduleJpaRepository;
 import io.hhplus.javaconcerthancil.domain.concert.Seat;
 import io.hhplus.javaconcerthancil.domain.concert.SeatRepository;
 import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;

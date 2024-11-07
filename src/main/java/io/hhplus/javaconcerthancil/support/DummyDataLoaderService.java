@@ -5,8 +5,8 @@ import io.hhplus.javaconcerthancil.domain.user.User;
 import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersion;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersionRepository;
-import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertJpaRepository;
-import io.hhplus.javaconcerthancil.infrastructure.persistence.ConcertScheduleJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertScheduleJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
