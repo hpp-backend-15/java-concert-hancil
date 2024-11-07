@@ -2,6 +2,7 @@ package io.hhplus.javaconcerthancil.infrastructure.persistence;
 
 import io.hhplus.javaconcerthancil.domain.concert.Concert;
 import io.hhplus.javaconcerthancil.domain.concert.ConcertRepository;
+import io.hhplus.javaconcerthancil.domain.concert.ConcertSchedule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -23,11 +24,18 @@ public class ConcertRepositoryImpl implements ConcertRepository {
 
         Concert cachedConcert = concertScheduleRedisRepository.getConcert(concertId);
         if (cachedConcert == null) {
-            Concert foundConcert = concertJpaRepository.findById(concertId).orElseThrow(() -> new IllegalArgumentException("concert not found"));
+            Concert foundConcert = concertJpaRepository.findById(concertId)
+                    .orElseThrow(() -> new IllegalArgumentException("concert not found"));
             concertScheduleRedisRepository.saveConcert(concertId, foundConcert);
             return foundConcert;
         } else {
             return cachedConcert;
         }
+    }
+
+    @Override
+    public ConcertSchedule getConcertSeats(Long scheduleId) {
+        return concertScheduleJpaRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalArgumentException("ConcertSchedule not found"));
     }
 }

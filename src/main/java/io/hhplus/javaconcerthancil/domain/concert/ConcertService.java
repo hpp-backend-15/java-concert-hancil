@@ -23,8 +23,9 @@ public class ConcertService {
     public List<Seat> getConcertSeats(Long concertId, Long scheduleId) {
 
         // 1. ConcertSchedule 엔티티 조회
-        ConcertSchedule concertSchedule = concertScheduleJpaRepository.findById(scheduleId)
-                .orElseThrow(() -> new IllegalArgumentException("ConcertSchedule not found"));
+//        ConcertSchedule concertSchedule = concertScheduleJpaRepository.findById(scheduleId)
+//                .orElseThrow(() -> new IllegalArgumentException("ConcertSchedule not found"));
+        ConcertSchedule concertSchedule = concertRepository.getConcertSeats(scheduleId);
 
         // 2. 콘서트 예약가능여부 및 concertId 유효성 검사
         concertSchedule.isValid(concertId);
