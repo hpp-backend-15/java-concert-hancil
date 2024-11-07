@@ -26,7 +26,7 @@ public class ConcertScheduleRedisRepository {
     public void saveConcert(long concertId, Concert foundConcert) {
         String key = "concert" + ":" + concertId;
         redisTemplate.opsForValue().set(key, foundConcert);
-        redisTemplate.expire(key, 24, TimeUnit.SECONDS);
+        redisTemplate.expire(key, 24, TimeUnit.HOURS);
     }
 
     public Concert getConcert(long concertId) {
