@@ -42,8 +42,8 @@ public class WaitingQueueRedisRepository {
         return waitingQueueRedisTemplate.opsForZSet().remove(WAITING_TOKENS_KEY, tokens.toArray());
     }
 
-    public Set<String> getKeys(){
-        return waitingQueueRedisTemplate.keys("*");
+    public Set<String> getActiveKeys(){
+        return waitingQueueRedisTemplate.keys("ACTIVE_*");
     }
 
     private static String validateWaitingToken(String token) {

@@ -60,9 +60,7 @@ public class WaitingQueueService {
         // 임시
         final Long maxWaitingSize = 50L;
 
-        // 이부분이 고민인데...
-        // key는 WAITING, 그리고 활성화된 키 (user:N) 즉 N개의 키만 등록이 된다고 가정한다.
-        long currentActiveSize = waitingQueueRedisRepository.getKeys().size() - 1;
+        long currentActiveSize = waitingQueueRedisRepository.getActiveKeys().size();
         long availableSlots = maxWaitingSize - currentActiveSize;
 
         // 50명이 이미 활성화되어 있는 경우, 추가로 이동할 필요 없음

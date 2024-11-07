@@ -11,10 +11,11 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class ActiveQueueRedisRepository {
 
+    private final static String ACTIVE_TOKENS_KEY = "ACTIVE_";
     @Qualifier("waitingQueueRedisTemplate")
     private final RedisTemplate<String, String> waitingQueueRedisTemplate;
 
     public void addActiveToken(String token) {
-        waitingQueueRedisTemplate.opsForValue().set(token, QueueStatus.PROGRESS.toString(),Duration.ofMinutes(30L));
+        waitingQueueRedisTemplate.opsForValue().set(ACTIVE_TOKENS_KEY+token, QueueStatus.PROGRESS.toString(),Duration.ofMinutes(30L));
     }
 }
