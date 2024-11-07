@@ -56,20 +56,31 @@ public class WaitingQueueService {
     }
 
     public void periodicallyEnterWaitingQueue() {
+
         // 임시
         final Long maxWaitingSize = 50L;
 
+        // 이부분이 고민인데...
+        // key는 WAITING, 그리고 활성화된 키 (user:N) 즉 N개의 키만 등록이 된다고 가정한다.
+        long currentActiveSize = waitingQueueRedisRepository.getKeys().size() - 1;
+        long availableSlots = maxWaitingSize - currentActiveSize;
+
+        // 50명이 이미 활성화되어 있는 경우, 추가로 이동할 필요 없음
+        if (availableSlots <= 0) {
+            log.info("현재 활성화 큐에 50명이 모두 활성화되어 있습니다.");
+            return;
+        }
         // 전체 사이즈를 조회후
         Set<String> range = waitingQueueRedisRepository.range(0, -1);
 
-        // 50명만 허용
-        long targetRange = range.size() - maxWaitingSize -1 >= 0 ? range.size() - maxWaitingSize -1 : -1;
-        Set<String> getWaitingTokenRange = waitingQueueRedisRepository.range(0, targetRange);
-        if(!getWaitingTokenRange.isEmpty()){
-            waitingQueueRedisRepository.delete(getWaitingTokenRange);
-            getWaitingTokenRange.forEach(token -> {
-                activeQueueRedisRepository.addActiveToken(token);
-            });
+        // 대기열 큐에서 가져올 수 있는 최대 토큰 수 계산
+        Set<String> waitingTokens = waitingQueueRedisRepository.range(0, Math.min(availableSlots - 1, range.size() - 1));
+
+        if (!waitingTokens.isEmpty()) {
+            // 대기열에서 토큰 제거 및 활성화 큐에 추가
+            waitingQueueRedisRepository.delete(waitingTokens);
+            waitingTokens.forEach(token -> activeQueueRedisRepository.addActiveToken(token));
+            log.info("대기열에서 {}명의 사용자를 활성화했습니다. 현재 활성화 큐 크기: {}", waitingTokens.size(), currentActiveSize + waitingTokens.size());
         }
 
     }
