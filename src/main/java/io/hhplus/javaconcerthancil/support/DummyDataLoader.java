@@ -6,6 +6,7 @@ import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersion;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersionRepository;
 import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.WaitingQueueRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ public class DummyDataLoader implements CommandLineRunner {
     private final ConcertJpaRepository concertJpaRepository;
     private final UserRepository userRepository;
     private final UserWithVersionRepository userWithVersionRepository;
+    private final WaitingQueueRedisRepository waitingQueueRedisRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -59,5 +61,8 @@ public class DummyDataLoader implements CommandLineRunner {
         concert.addSchedule(concertSchedule2);
         concert.addSchedule(concertSchedule3);
         concertJpaRepository.save(concert);
+
+        //redis의 key-value 초기화
+        waitingQueueRedisRepository.deleteAll();
     }
 }

@@ -1,20 +1,25 @@
 package io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue;
 
+import io.hhplus.javaconcerthancil.domain.waitingqueue.QueueStatus;
 import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
 import io.hhplus.javaconcerthancil.interfaces.api.common.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.Duration;
 import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class WaitingQueueRedisRepository {
 
     private final static String WAITING_TOKENS_KEY = "WAITING";
+    private final static String ACTIVE_TOKENS_KEY = "ACTIVE_";
 
     @Qualifier("waitingQueueRedisTemplate")
     private final RedisTemplate<String, String> waitingQueueRedisTemplate;
@@ -26,9 +31,9 @@ public class WaitingQueueRedisRepository {
 
     // 0부터 시작하므로 1을 더해줌
     public Long rank(String token){
-        String targetToken = validateWaitingToken(token);
+        String targetToken = validateToken(token);
         Long rank = waitingQueueRedisTemplate.opsForZSet().rank(WAITING_TOKENS_KEY, targetToken);
-        if(rank == null) {
+        if(rank == null || rank == 0) {
             return 0L;
         }
         return rank + 1;
@@ -46,16 +51,38 @@ public class WaitingQueueRedisRepository {
         return waitingQueueRedisTemplate.keys("ACTIVE_*");
     }
 
-    private static String validateWaitingToken(String token) {
-        String targetToken = "";
-        if(token != null && token.contains("_")){
-            String[] splitToken = token.split("_");
-            if(!splitToken[0].equals(WAITING_TOKENS_KEY)){
-                throw new ApiException(ErrorCode.E006, LogLevel.ERROR, "유효하지 않은 요청입니다.");
-            }
-            targetToken = splitToken[1];
+
+    public void addActiveToken(String token) {
+        waitingQueueRedisTemplate.opsForValue().set(ACTIVE_TOKENS_KEY+token, QueueStatus.PROGRESS.toString(), Duration.ofMinutes(30L));
+    }
+
+    public boolean isInActivationQueue(String token) {
+        String targetToken = validateToken(token);
+        String key = ACTIVE_TOKENS_KEY + targetToken;
+        return Boolean.TRUE.equals(waitingQueueRedisTemplate.hasKey(key));
+    }
+
+    private static String validateToken(String token) {
+
+        if (token == null || !token.contains("_")) {
+            throw new ApiException(ErrorCode.E006, LogLevel.ERROR, "유효하지 않은 요청입니다.");
         }
-        return targetToken;
+
+        String[] splitToken = token.split("_");
+        if (splitToken.length < 2 && !WAITING_TOKENS_KEY.equals(splitToken[0])) {
+            throw new ApiException(ErrorCode.E006, LogLevel.ERROR, "유효하지 않은 요청입니다.");
+        }
+
+        return splitToken[1];
+    }
+
+    public void deleteAll() {
+        Set<String> keys = waitingQueueRedisTemplate.keys("*");
+        if (keys != null) {
+            for (String key : keys) {
+                waitingQueueRedisTemplate.delete(key);
+            }
+        }
     }
 
 }
