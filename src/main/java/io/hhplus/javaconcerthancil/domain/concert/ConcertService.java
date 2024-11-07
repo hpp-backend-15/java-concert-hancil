@@ -11,8 +11,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConcertService {
 
-    private final ConcertJpaRepository concertJpaRepository;
-    private final ConcertScheduleJpaRepository concertScheduleJpaRepository;
+//    private final ConcertJpaRepository concertJpaRepository;
+//    private final ConcertScheduleJpaRepository concertScheduleJpaRepository;
     private final ConcertRepository concertRepository;
 
     public Concert getScheduledConcert(Long concertId) {
