@@ -1,6 +1,6 @@
 package io.hhplus.javaconcerthancil.domain.reservation;
 
-import io.hhplus.javaconcerthancil.domain.concert.ConcertScheduleRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertScheduleJpaRepository;
 import io.hhplus.javaconcerthancil.domain.concert.Seat;
 import io.hhplus.javaconcerthancil.domain.concert.SeatRepository;
 import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
@@ -25,7 +25,7 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final PaymentRepository paymentRepository;
-    private final ConcertScheduleRepository concertScheduleRepository;
+    private final ConcertScheduleJpaRepository concertScheduleJpaRepository;
 
     private final UserRepository userRepository;
     private final SeatRepository seatRepository;
@@ -34,7 +34,7 @@ public class ReservationService {
     public Reservation reserveConcert(Long userId, Long concertId, Long scheduleId, List<Long> seatIds) {
 
         log.info("[JHC]초기id: {}, 초기seatId: {}, :초기scheduleId {}" , userId,seatIds.toString(),scheduleId);
-        concertScheduleRepository.findByIdWithLock(scheduleId)
+        concertScheduleJpaRepository.findByIdWithLock(scheduleId)
                 .orElseThrow(()-> new ApiException(ErrorCode.E404, LogLevel.INFO, "Concert not found"));
         // 1-1. 사용자 확인
         User user = userRepository.findById(userId)

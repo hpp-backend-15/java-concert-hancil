@@ -1,6 +1,6 @@
 package io.hhplus.javaconcerthancil.domain.concert;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface ConcertRepository extends JpaRepository<Concert, Long> {
+public interface ConcertRepository {
+    Concert getConcert(long concertId);
+    ConcertSchedule getConcertSeats(Long scheduleId);
 }

@@ -9,18 +9,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConcertService {
 
+//    private final ConcertJpaRepository concertJpaRepository;
+//    private final ConcertScheduleJpaRepository concertScheduleJpaRepository;
     private final ConcertRepository concertRepository;
-    private final ConcertScheduleRepository concertScheduleRepository;
 
     public Concert getScheduledConcert(Long concertId) {
-        return concertRepository.findById(concertId).orElseThrow(() -> new IllegalArgumentException("concert not found"));
+//        return concertJpaRepository.findById(concertId).orElseThrow(() -> new IllegalArgumentException("concert not found"));
+        return concertRepository.getConcert(concertId);
     }
 
     public List<Seat> getConcertSeats(Long concertId, Long scheduleId) {
 
         // 1. ConcertSchedule 엔티티 조회
-        ConcertSchedule concertSchedule = concertScheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new IllegalArgumentException("ConcertSchedule not found"));
+//        ConcertSchedule concertSchedule = concertScheduleJpaRepository.findById(scheduleId)
+//                .orElseThrow(() -> new IllegalArgumentException("ConcertSchedule not found"));
+        ConcertSchedule concertSchedule = concertRepository.getConcertSeats(scheduleId);
 
         // 2. 콘서트 예약가능여부 및 concertId 유효성 검사
         concertSchedule.isValid(concertId);

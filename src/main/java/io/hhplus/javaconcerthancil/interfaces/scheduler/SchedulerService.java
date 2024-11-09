@@ -8,6 +8,7 @@ import io.hhplus.javaconcerthancil.domain.payments.PaymentRepository;
 import io.hhplus.javaconcerthancil.domain.payments.PaymentStatus;
 import io.hhplus.javaconcerthancil.domain.reservation.*;
 import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueueRepository;
+import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueueService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-//@Service
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class SchedulerService {
@@ -28,8 +29,10 @@ public class SchedulerService {
     private final ReservationRepository reservationRepository;
     private final ReservationItemRepository reservationItemRepository;
     private final PaymentRepository paymentRepository;
+    private final WaitingQueueService waitingQueueService;
 
-    @Scheduled(fixedDelay = 5 * 1000)
+
+//    @Scheduled(fixedDelay = 5 * 1000)
     @Transactional
     public void enteringUserQueue() {
         LocalDateTime now = LocalDateTime.now();
@@ -37,7 +40,7 @@ public class SchedulerService {
         log.info("{}개의 대기열 항목이 EXPIRED 되었습니다.", updatedCount);
     }
 
-    @Scheduled(fixedRate = 10 * 1000)
+//    @Scheduled(fixedRate = 10 * 1000)
     @Transactional
     public void cancelExpiredPendingReservations() {
         LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(5);
@@ -73,5 +76,10 @@ public class SchedulerService {
         log.info("{}개의 예약건들이 만료되었습니다.",expiredReservations.size());
     }
 
+
+    @Scheduled(fixedDelay = 1000)
+    public void enteringUserQueueWithRedis() {
+        waitingQueueService.periodicallyEnterWaitingQueue();
+    }
 
 }

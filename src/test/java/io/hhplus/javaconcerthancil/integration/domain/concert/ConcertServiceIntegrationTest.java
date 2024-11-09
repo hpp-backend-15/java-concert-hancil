@@ -1,6 +1,7 @@
 package io.hhplus.javaconcerthancil.integration.domain.concert;
 
 import io.hhplus.javaconcerthancil.domain.concert.*;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertJpaRepository;
 import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
@@ -21,7 +22,7 @@ public class ConcertServiceIntegrationTest {
     private ConcertService concertService;
 
     @Autowired
-    private ConcertRepository concertRepository;
+    private ConcertJpaRepository concertJpaRepository;
 
     final int CONCERT_SCHEDULED_SIZE_3 = 3;
     final int MAX_SEAT_50 = 50;
@@ -47,7 +48,7 @@ public class ConcertServiceIntegrationTest {
         concert.addSchedule(concertSchedule1);
         concert.addSchedule(concertSchedule2);
         concert.addSchedule(concertSchedule3);
-        concertRepository.save(concert);
+        concertJpaRepository.save(concert);
 
     }
 
