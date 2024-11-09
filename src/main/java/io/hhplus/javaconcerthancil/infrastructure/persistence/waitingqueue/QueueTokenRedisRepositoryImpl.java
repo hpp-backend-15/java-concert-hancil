@@ -75,7 +75,7 @@ public class QueueTokenRedisRepositoryImpl implements QueueTokenRedisRepository 
     @Override
     public void deleteActiveToken(String token) {
         String targetToken = validateToken(token);
-        waitingQueueRedisTemplate.delete(targetToken);
+        waitingQueueRedisTemplate.delete(ACTIVE_TOKENS_KEY+ targetToken);
     }
 
     @Override
