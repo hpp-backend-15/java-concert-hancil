@@ -13,15 +13,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserWithVersionRepository userWithVersionRepository;
 
-    public Optional<User> findById(long userId) {
+    public User findById(long userId) {
         return userRepository.findById(userId);
     }
 
-    public Optional<UserWithVersion> findByIdWithVersion(long userId) {
+    public UserWithVersion findByIdWithVersion(long userId) {
         return userWithVersionRepository.findById(userId);
     }
 
-    public Optional<User> findByIdWithLock(long userId) {
+    public User findByIdWithLock(long userId) {
         return userRepository.findByIdWithLock(userId);
     }
 

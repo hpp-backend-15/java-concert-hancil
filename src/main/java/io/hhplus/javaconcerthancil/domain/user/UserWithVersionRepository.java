@@ -1,7 +1,7 @@
 package io.hhplus.javaconcerthancil.domain.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+public interface UserWithVersionRepository {
 
-public interface UserWithVersionRepository extends JpaRepository<UserWithVersion, Long> {
-
+    UserWithVersion findById(long userId);
+    UserWithVersion save(UserWithVersion user);
 }

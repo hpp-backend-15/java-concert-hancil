@@ -27,9 +27,7 @@ public class UserFacade {
     public ChargeResponse charge(Long userId, ChargeRequest requestBody) {
 
         //1. 사용자 조회
-        User user = userService.findById(userId).orElseThrow(() ->
-                new ApiException(ErrorCode.E404, LogLevel.INFO, "사용자가 존재하지 않습니다.")
-        );
+        User user = userService.findById(userId);
 
         //2. 충전 및 저장
         user.addAmount(requestBody.amount());
@@ -47,9 +45,7 @@ public class UserFacade {
     @Transactional
     public ChargeResponse chargeWithPessimisticLock(Long userId, ChargeRequest requestBody) {
         //1. 사용자 조회
-        User user = userService.findByIdWithLock(userId).orElseThrow(() ->
-                new ApiException(ErrorCode.E404, LogLevel.INFO, "사용자가 존재하지 않습니다.")
-        );
+        User user = userService.findByIdWithLock(userId);
 
         //2. 충전 및 저장
         user.addAmount(requestBody.amount());
@@ -66,9 +62,7 @@ public class UserFacade {
 
     public UserBalanceResponse getUserBalance(Long userId) {
 
-        User user = userService.findById(userId).orElseThrow(()->
-                new ApiException(ErrorCode.E404, LogLevel.INFO, "사용자가 존재하지 않습니다.")
-        );
+        User user = userService.findById(userId);
 
         return new UserBalanceResponse(user.getId(), user.getBalance());
     }
@@ -82,9 +76,7 @@ public class UserFacade {
     public ChargeResponse chargeWithOptimisticLock(long userId, ChargeRequest requestBody) {
 
         //1. 사용자 조회
-        UserWithVersion user = userService.findByIdWithVersion(userId).orElseThrow(() ->
-                new ApiException(ErrorCode.E404, LogLevel.INFO, "사용자가 존재하지 않습니다.")
-        );
+        UserWithVersion user = userService.findByIdWithVersion(userId);
 
         //2. 충전 및 저장
         user.addAmount(requestBody.amount());
@@ -108,9 +100,7 @@ public class UserFacade {
     public ChargeResponse chargeWithRedisLock(Long userId, ChargeRequest requestBody) {
 
         //1. 사용자 조회
-        UserWithVersion user = userService.findByIdWithVersion(userId).orElseThrow(() ->
-                new ApiException(ErrorCode.E404, LogLevel.INFO, "사용자가 존재하지 않습니다.")
-        );
+        UserWithVersion user = userService.findByIdWithVersion(userId);
 
         //2. 충전 및 저장
         user.addAmount(requestBody.amount());

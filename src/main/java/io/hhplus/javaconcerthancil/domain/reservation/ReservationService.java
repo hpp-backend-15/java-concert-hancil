@@ -37,9 +37,9 @@ public class ReservationService {
         concertScheduleJpaRepository.findByIdWithLock(scheduleId)
                 .orElseThrow(()-> new ApiException(ErrorCode.E404, LogLevel.INFO, "Concert not found"));
         // 1-1. 사용자 확인
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(userId);
 //        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApiException(ErrorCode.E404, LogLevel.INFO, "User not found"));
+//                .orElseThrow(() -> new ApiException(ErrorCode.E404, LogLevel.INFO, "User not found"));
         log.info("user: {}", user.getId());
         // 1-2 예약 상태 초기화
         Reservation reservation = new Reservation(user);
@@ -47,11 +47,9 @@ public class ReservationService {
         // 2. 좌석 유효성 검사
         List<Seat> seats = seatRepository.findAllByIdForUpdate(seatIds);
 
-        // 좌석이 없거나, 상태가 AVAILABLE이 아닌 좌석이 있는지 확인
+        // 좌석의 상태가 AVAILABLE이 아닌 좌석이 있는지 확인
         for (Seat seat : seats) {
-            if (seat == null) {
-                throw new ApiException(ErrorCode.E404, LogLevel.INFO, "Seat not found");
-            }
+
             if (!seat.isAvailable()) {
                 throw new ApiException(ErrorCode.E002, LogLevel.INFO, "Seat not available");
             }

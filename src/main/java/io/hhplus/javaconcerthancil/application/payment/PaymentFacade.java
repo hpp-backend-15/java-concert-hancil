@@ -41,9 +41,7 @@ public class PaymentFacade {
         Optional<Integer> totalSeatPriceByReservationId = reservationItemRepository.findTotalSeatPriceByReservationId(requestBody.reservationId());
 
         //3. 사용자 포인트 사용
-        UserWithVersion user = userService.findByIdWithVersion(userId).orElseThrow(
-                ()-> new ApiException(ErrorCode.E404, LogLevel.INFO, "user not found")
-        );
+        UserWithVersion user = userService.findByIdWithVersion(userId);
 
         user.subtractAmount(totalSeatPriceByReservationId.get());
         userService.updateBalanceWithVersion(user);

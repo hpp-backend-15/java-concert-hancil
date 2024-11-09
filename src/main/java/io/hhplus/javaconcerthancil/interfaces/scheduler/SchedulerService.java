@@ -63,11 +63,9 @@ public class SchedulerService {
             // 관련 좌석의 상태를 AVAILABLE로 변경
             List<Long> seatIdsByReservationId = reservationItemRepository.findSeatIdsByReservationId(reservation.getId());
             for (Long seatId : seatIdsByReservationId) {
-                Optional<Seat> seatOptional = seatRepository.findById(seatId);
-                seatOptional.ifPresent(seat -> {
-                    seat.setStatus(SeatStatus.AVAILABLE);
-                    seatRepository.save(seat); // 좌석 정보 저장
-                });
+                Seat searchedSeat = seatRepository.findById(seatId);
+                searchedSeat.setStatus(SeatStatus.AVAILABLE);
+                seatRepository.save(searchedSeat);
             }
 
             // 예약 정보 저장 (상태 업데이트 반영)
