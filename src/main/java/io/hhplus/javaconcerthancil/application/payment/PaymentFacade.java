@@ -1,25 +1,22 @@
 package io.hhplus.javaconcerthancil.application.payment;
 
+import io.hhplus.javaconcerthancil.domain.payments.PaymentEventPublisher;
 import io.hhplus.javaconcerthancil.domain.concert.SeatRepository;
 import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
 import io.hhplus.javaconcerthancil.domain.payments.Payment;
 import io.hhplus.javaconcerthancil.domain.payments.PaymentsService;
+import io.hhplus.javaconcerthancil.interfaces.external.payments.dto.PaymentSuccessEvent;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationItemRepository;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationRepository;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationStatus;
 import io.hhplus.javaconcerthancil.domain.user.*;
-import io.hhplus.javaconcerthancil.domain.waitingqueue.WaitingQueueService;
 import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.QueueTokenRedisRepository;
-import io.hhplus.javaconcerthancil.interfaces.api.common.ApiException;
-import io.hhplus.javaconcerthancil.interfaces.api.common.ErrorCode;
 import io.hhplus.javaconcerthancil.interfaces.api.v1.payment.request.PaymentsRequest;
 import io.hhplus.javaconcerthancil.interfaces.api.v1.payment.response.PaymentsResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.logging.LogLevel;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,14 +24,15 @@ public class PaymentFacade {
 
     private final PaymentsService paymentsService;
     private final UserService userService;
-    private final WaitingQueueService queueService;
     private final ReservationItemRepository reservationItemRepository;
     private final SeatRepository seatRepository;
     private final ReservationRepository reservationRepository;
     private final QueueTokenRedisRepository queueTokenRedisRepository;
 
-    public PaymentsResponse completePayment(Long userId, PaymentsRequest requestBody) {
+    private final PaymentEventPublisher paymentEventPublisher;
 
+    @Transactional
+    public PaymentsResponse completePayment(Long userId, PaymentsRequest requestBody) {
 
         //1. payment 요청 검증
         Payment paymentsByReservationId = paymentsService.findPaymentsByReservationId(requestBody.reservationId());
@@ -72,6 +70,7 @@ public class PaymentFacade {
         String token = "WAITING_" + "user:" + userId;
         queueTokenRedisRepository.deleteActiveToken(token);
 
+        paymentEventPublisher.publishPaymentResult(new PaymentSuccessEvent(payment.getId(), "Success"));
 
         return new PaymentsResponse(payment.getId(),payment.getAmount(),payment.getStatus());
     }
