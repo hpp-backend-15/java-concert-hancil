@@ -30,34 +30,27 @@ public class PaymentFacade {
     private final WaitingQueueService queueService;
     private final ReservationItemRepository reservationItemRepository;
     private final SeatRepository seatRepository;
-//    private final WaitingQueueRepository waitingQueueRepository;
     private final ReservationRepository reservationRepository;
     private final QueueTokenRedisRepository queueTokenRedisRepository;
 
-
     public PaymentsResponse completePayment(Long userId, PaymentsRequest requestBody) {
 
+
+        //1. payment 요청 검증
         Payment paymentsByReservationId = paymentsService.findPaymentsByReservationId(requestBody.reservationId());
-        Optional<Integer> totalSeatPriceByReservationId = reservationItemRepository.findTotalSeatPriceByReservationId(requestBody.reservationId());
+
+        //2. 좌석 총 금액 계산
+        Integer totalSeatPriceByReservationId = reservationItemRepository.findTotalSeatPriceByReservationId(requestBody.reservationId());
 
         //3. 사용자 포인트 사용
         UserWithVersion user = userService.findByIdWithVersion(userId);
-
-        user.subtractAmount(totalSeatPriceByReservationId.get());
+        user.subtractAmount(totalSeatPriceByReservationId);
         userService.updateBalanceWithVersion(user);
-//        User updateBalanceUser = userService.updateBalance(user);
-//        BalanceHistory balanceHistory = new BalanceHistory(
-//                updateBalanceUser,
-//                totalSeatPriceByReservationId.get(),
-//                TransactionType.USE
-//        );
-//
-//        userService.saveHistory(balanceHistory);
 
         //4. 결제완료
-        Payment payment = paymentsService.completePayment(paymentsByReservationId, totalSeatPriceByReservationId.get());
+        Payment payment = paymentsService.completePayment(paymentsByReservationId, totalSeatPriceByReservationId);
 
-        //5. 좌석 완료
+        //5. 좌석 상태 완료
         List<Long> seatIds = reservationItemRepository.findSeatIdsByReservationId(requestBody.reservationId());
         seatRepository.updateSeatStatusBySeatIds(SeatStatus.OCCUPIED, seatIds);
 

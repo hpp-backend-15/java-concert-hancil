@@ -16,9 +16,7 @@ public class PaymentsService {
     private final PaymentRepository paymentRepository;
 
     public Payment findPaymentsByReservationId(Long reservationId){
-        Payment payment = paymentRepository.findByReservationId(reservationId)
-                .orElseThrow(()-> new ApiException(ErrorCode.E404, LogLevel.INFO, "예약건이 존재하지 않습니다."));
-        return payment;
+        return paymentRepository.findByReservationId(reservationId);
     }
 
     public Payment completePayment(Payment payment, long amount){

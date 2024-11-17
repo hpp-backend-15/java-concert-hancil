@@ -54,11 +54,10 @@ public class SchedulerService {
             reservation.setStatus(ReservationStatus.CANCELLED);
 
             // 결제 상태를 FAILED로 변경
-            Optional<Payment> paymentByReservationId = paymentRepository.findByReservationId(reservation.getId());
-            paymentByReservationId.ifPresent(payment -> {
-                payment.setStatus(PaymentStatus.FAILED);
-                paymentRepository.save(payment); // 결제 정보 저장
-            });
+            Payment paymentByReservationId = paymentRepository.findByReservationId(reservation.getId());
+            paymentByReservationId.setStatus(PaymentStatus.FAILED);
+            paymentRepository.save(paymentByReservationId); // 결제 정보 저장
+
 
             // 관련 좌석의 상태를 AVAILABLE로 변경
             List<Long> seatIdsByReservationId = reservationItemRepository.findSeatIdsByReservationId(reservation.getId());
