@@ -45,7 +45,7 @@ public class WaitingQueueServiceUnitTest {
         given(tokenProvider.createQueueToken()).willReturn(generatedToken);
 
         // When
-        String issueToken = waitingQueueService.issueToken(userId);
+        String issueToken = waitingQueueService.issueTokenWithRedis(userId);
 
         // Then
         assertNotNull(issueToken);

@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.support.testcontainer;
+package io.hhplus.javaconcerthancil.support.testcontainer.redis;
 
 import io.hhplus.javaconcerthancil.domain.waitingqueue.QueueStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(TestContainerConfig.class)
+@ExtendWith(TestContainerRedisConfig.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WaitingQueueWithTestContainerTest {
 

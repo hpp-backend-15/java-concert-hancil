@@ -1,6 +1,7 @@
 package io.hhplus.javaconcerthancil.integration.domain.waitingqueue;
 
 import io.hhplus.javaconcerthancil.domain.waitingqueue.*;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.waitingqueue.QueueTokenRedisRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,18 +17,19 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class WaitingQueueServiceIntegrationTest {
 
-    @Autowired
-    private WaitingQueueTokenProvider tokenProvider;
 
     @Autowired
     private WaitingQueueRepository queueRepository;
+
+    @Autowired
+    private QueueTokenRedisRepository queueTokenRedisRepository;
 
     @Autowired
     private WaitingQueueService waitingQueueService;
 
     @BeforeEach
     void setUp() {
-        waitingQueueService = new WaitingQueueService(tokenProvider, queueRepository);
+        waitingQueueService = new WaitingQueueService(queueRepository, queueTokenRedisRepository);
         queueRepository.save(new WaitingQueue(1L, "token1"));
     }
 
@@ -40,7 +42,7 @@ public class WaitingQueueServiceIntegrationTest {
         Long userId = 99L;
 
         // When
-        String issueToken = waitingQueueService.issueToken(userId);
+        String issueToken = waitingQueueService.issueTokenWithRedis(userId);
 
         // Then
         assertNotNull(issueToken);
