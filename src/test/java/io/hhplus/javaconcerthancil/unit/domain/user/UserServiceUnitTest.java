@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
@@ -33,14 +34,14 @@ public class UserServiceUnitTest {
         int wantToCharge = 10_000;
         User user = new User("JHC");
         user.addAmount(wantToCharge);
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findById(1L)).willReturn(user);
 
         //when
-        Optional<User> findUser = userService.findById(1L);
+        User findUser = userService.findById(1L);
 
         //then
-        assertTrue(findUser.isPresent());
-        assertThat(findUser.get().getBalance()).isEqualTo(10_000);
+        assertNotNull(findUser);
+        assertThat(findUser.getBalance()).isEqualTo(10_000);
 
     }
 

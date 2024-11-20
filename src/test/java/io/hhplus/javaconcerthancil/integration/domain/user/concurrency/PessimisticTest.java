@@ -67,10 +67,10 @@ public class PessimisticTest {
         latch.await(); // 모든 스레드가 완료될 때까지 대기
 
         // 최종 잔액 확인
-        User user1 = userRepository.findById(1L).orElseThrow();
-        User user2 = userRepository.findById(2L).orElseThrow();
-        User user3 = userRepository.findById(3L).orElseThrow();
-        User user4 = userRepository.findById(4L).orElseThrow();
+        User user1 = userRepository.findById(1L);
+        User user2 = userRepository.findById(2L);
+        User user3 = userRepository.findById(3L);
+        User user4 = userRepository.findById(4L);
 
         assertAll(
                 () -> AssertionsForClassTypes.assertThat(user1.getBalance()).isEqualTo(5*1000),

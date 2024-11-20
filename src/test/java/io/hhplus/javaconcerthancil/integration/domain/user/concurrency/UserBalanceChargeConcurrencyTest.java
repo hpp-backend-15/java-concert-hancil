@@ -73,10 +73,10 @@ public class UserBalanceChargeConcurrencyTest {
         latch.await(); // 모든 스레드가 완료될 때까지 대기
 
         // 최종 잔액 확인
-        User user1 = userRepository.findById(1L).orElseThrow();
-        User user2 = userRepository.findById(2L).orElseThrow();
-        User user3 = userRepository.findById(3L).orElseThrow();
-        User user4 = userRepository.findById(4L).orElseThrow();
+        User user1 = userRepository.findById(1L);
+        User user2 = userRepository.findById(2L);
+        User user3 = userRepository.findById(3L);
+        User user4 = userRepository.findById(4L);
 
         assertAll(
                 () -> AssertionsForClassTypes.assertThat(user1.getBalance()).isNotEqualTo(5*1000),
@@ -116,10 +116,10 @@ public class UserBalanceChargeConcurrencyTest {
         latch.await(); // 모든 스레드가 완료될 때까지 대기
 
         // 최종 잔액 확인
-        User user1 = userRepository.findById(1L).orElseThrow();
-        User user2 = userRepository.findById(2L).orElseThrow();
-        User user3 = userRepository.findById(3L).orElseThrow();
-        User user4 = userRepository.findById(4L).orElseThrow();
+        User user1 = userRepository.findById(1L);
+        User user2 = userRepository.findById(2L);
+        User user3 = userRepository.findById(3L);
+        User user4 = userRepository.findById(4L);
 
         assertAll(
                 () -> AssertionsForClassTypes.assertThat(user1.getBalance()).isEqualTo(5*1000),
@@ -159,10 +159,10 @@ public class UserBalanceChargeConcurrencyTest {
         latch.await(); // 모든 스레드가 완료될 때까지 대기
 
         // 최종 잔액 확인
-        UserWithVersion user1 = userWithVersionRepository.findById(1L).orElseThrow();
-        UserWithVersion user2 = userWithVersionRepository.findById(2L).orElseThrow();
-        UserWithVersion user3 = userWithVersionRepository.findById(3L).orElseThrow();
-        UserWithVersion user4 = userWithVersionRepository.findById(4L).orElseThrow();
+        UserWithVersion user1 = userWithVersionRepository.findById(1L);
+        UserWithVersion user2 = userWithVersionRepository.findById(2L);
+        UserWithVersion user3 = userWithVersionRepository.findById(3L);
+        UserWithVersion user4 = userWithVersionRepository.findById(4L);
 
         System.out.println(user1.getBalance());
         System.out.println(user2.getBalance());

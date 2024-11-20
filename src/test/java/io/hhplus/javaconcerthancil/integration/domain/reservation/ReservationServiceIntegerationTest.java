@@ -2,12 +2,14 @@ package io.hhplus.javaconcerthancil.integration.domain.reservation;
 
 import io.hhplus.javaconcerthancil.domain.concert.*;
 import io.hhplus.javaconcerthancil.domain.payments.Payment;
-import io.hhplus.javaconcerthancil.domain.payments.PaymentRepository;
 import io.hhplus.javaconcerthancil.domain.payments.PaymentStatus;
 import io.hhplus.javaconcerthancil.domain.reservation.*;
 import io.hhplus.javaconcerthancil.domain.user.User;
 import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.payment.PaymentJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.reservation.ReservationItemJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.reservation.ReservationJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,13 +37,13 @@ public class ReservationServiceIntegerationTest {
     private UserRepository userRepository;
 
     @Autowired
-    private ReservationRepository reservationRepository;
+    private ReservationJpaRepository reservationRepository;
 
     @Autowired
-    private ReservationItemRepository reservationItemRepository;
+    private ReservationItemJpaRepository reservationItemRepository;
 
     @Autowired
-    private PaymentRepository paymentRepository;
+    private PaymentJpaRepository paymentRepository;
 
 
     @BeforeAll
@@ -88,19 +89,18 @@ public class ReservationServiceIntegerationTest {
         }
 
         Long userId = 1L;
-        Optional<User> optionalUser = userRepository.findById(userId);
+        User optionalUser = userRepository.findById(userId);
         // 사용자데이터가 정상적으로 생성되었는지 확인
-        assertTrue(optionalUser.isPresent());
-        assertThat(optionalUser.get().getId()).isEqualTo(userId);
+        assertNotNull(optionalUser);
+        assertThat(optionalUser.getId()).isEqualTo(userId);
 
         //
-        Reservation reservation = reservationRepository.save(new Reservation(optionalUser.get()));
+        Reservation reservation = reservationRepository.save(new Reservation(optionalUser));
         assertThat(reservation.getUser().getId()).isEqualTo(userId);
         assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.PENDING);
 
         for (Long seatId : seatIds) {
-            Seat seat = seatRepository.findById(seatId)
-                    .orElseThrow(() -> new RuntimeException("Seat not found"));
+            Seat seat = seatRepository.findById(seatId);
 
             if (!seat.isAvailable()) {
                 throw new RuntimeException("Seat is not available");

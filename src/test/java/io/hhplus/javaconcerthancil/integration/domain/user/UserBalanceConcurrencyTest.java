@@ -5,6 +5,8 @@ import io.hhplus.javaconcerthancil.domain.user.User;
 import io.hhplus.javaconcerthancil.domain.user.UserRepository;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersion;
 import io.hhplus.javaconcerthancil.domain.user.UserWithVersionRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.user.UserJpaRepository;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.user.UserWithVersionJpaRepository;
 import io.hhplus.javaconcerthancil.interfaces.api.v1.user.request.ChargeRequest;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
@@ -31,10 +33,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserBalanceConcurrencyTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userRepository;
 
     @Autowired
-    private UserWithVersionRepository userWithVersionRepository;
+    private UserWithVersionJpaRepository userWithVersionRepository;
 
     @Autowired
     private RedissonClient redissonClient;
