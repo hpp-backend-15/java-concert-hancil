@@ -28,7 +28,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-    #      KAFKA_CREATE_TOPICS: "concert.local.payment.topic:1:1"  # 토픽명:파티션수:복제수
+      KAFKA_CREATE_TOPICS: "ConcertPayment:1:1"  # 토픽명:파티션수:복제수
     networks:
       - concert_network
 
