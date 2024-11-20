@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.integration.infrastructure.kafka;
+package io.hhplus.javaconcerthancil.support.dto;
 
 public class ProducerDTO {
 

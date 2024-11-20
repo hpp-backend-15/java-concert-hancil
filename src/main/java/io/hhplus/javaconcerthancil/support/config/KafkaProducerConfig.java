@@ -1,5 +1,6 @@
 package io.hhplus.javaconcerthancil.support.config;
 
+import io.hhplus.javaconcerthancil.support.dto.ProducerDTO;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,7 @@ public class KafkaProducerConfig {
     private final static String LOCAL_BOOTSTRAP_SERVER = "localhost:9090";
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory() {
+    public ProducerFactory<String, ProducerDTO> producerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, LOCAL_BOOTSTRAP_SERVER);
         config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true); // 카프카 메시지 중복 전송 방지
@@ -29,7 +30,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
+    public KafkaTemplate<String, ProducerDTO> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
