@@ -70,13 +70,15 @@ public class KafkaIntegrationTest {
 
             kafkaConsumer.subscribe(Collections.singletonList(producerDto.getTopic()));
 
-            ConsumerRecords<String, ProducerDTO> records = kafkaConsumer.poll(Duration.ofSeconds(10)); // 메시지 수신
+            ConsumerRecords<String, ProducerDTO> records = kafkaConsumer.poll(Duration.ofSeconds(60)); // 메시지 수신
+            log.info("record count: {}", records.count());
             assertThat(records.count()).isGreaterThan(0); // 메시지가 1개 이상인지 확인
-
             for (ConsumerRecord<String, ProducerDTO> record : records) {
                 log.info("Consumed message: key={}, value={}, topic={}}",
                         record.key(), record.value(), record.topic());
-                assertThat(record.value()).isEqualTo(producerDto.getMessage()); // 값 검증
+                log.info("record value: {}", record.value().getMessage());
+                log.info("dto value: {}", producerDto.getMessage());
+                assertThat(record.value().getMessage()).isEqualTo(producerDto.getMessage()); // 값 검증
             }
 
         } catch (Exception e) {

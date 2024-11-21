@@ -54,7 +54,6 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false); // 자동 오프셋 커밋을 비활성화
 
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, JsonSerializer.class); // 기본 값 설정
         return props;
     }
 
