@@ -1,5 +1,8 @@
 package io.hhplus.javaconcerthancil.application.payment;
 
+import io.hhplus.javaconcerthancil.domain.outbox.EventType;
+import io.hhplus.javaconcerthancil.domain.outbox.MessageOutbox;
+import io.hhplus.javaconcerthancil.domain.outbox.MessageOutboxWriter;
 import io.hhplus.javaconcerthancil.domain.payments.PaymentEventPublisher;
 import io.hhplus.javaconcerthancil.domain.concert.SeatRepository;
 import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
@@ -28,8 +31,8 @@ public class PaymentFacade {
     private final SeatRepository seatRepository;
     private final ReservationRepository reservationRepository;
     private final QueueTokenRedisRepository queueTokenRedisRepository;
-
     private final PaymentEventPublisher paymentEventPublisher;
+    private final MessageOutboxWriter messageOutboxWriter;
 
     @Transactional
     public PaymentsResponse completePayment(Long userId, PaymentsRequest requestBody) {
@@ -70,8 +73,16 @@ public class PaymentFacade {
         String token = "WAITING_" + "user:" + userId;
         queueTokenRedisRepository.deleteActiveToken(token);
 
-        paymentEventPublisher.publishPaymentResult(new PaymentSuccessEvent(payment.getId(), "Success"));
 
+        MessageOutbox tokenMessageOutbox = messageOutboxWriter.save(
+                MessageOutbox.createMessage(
+                        "ConcertPayment",
+                        EventType.SEND_PAYMENT_RESULT,
+                        String.valueOf(payment.getId())
+                )
+        );
+        PaymentSuccessEvent paymentSuccessEvent = new PaymentSuccessEvent(payment.getId(), tokenMessageOutbox.getId(), "Success");
+        paymentEventPublisher.publishPaymentResult(paymentSuccessEvent);
         return new PaymentsResponse(payment.getId(),payment.getAmount(),payment.getStatus());
     }
 }
