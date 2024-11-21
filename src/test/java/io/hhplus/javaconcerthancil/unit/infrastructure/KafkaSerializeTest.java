@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.integration.infrastructure.kafka;
+package io.hhplus.javaconcerthancil.unit.infrastructure;
 
 import io.hhplus.javaconcerthancil.support.dto.ProducerDTO;
 import org.junit.jupiter.api.BeforeEach;
