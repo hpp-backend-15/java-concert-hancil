@@ -19,7 +19,7 @@ public class KafkaSerializeTest {
     }
 
     @Test
-    void name() {
+    void dto역직렬화테스트() {
         JsonDeserializer<ProducerDTO> deserializer = new JsonDeserializer<>(ProducerDTO.class, false);
         ProducerDTO producerDTO = deserializer.deserialize("TEST", serialized);
         assertThat(producerDTO.getMessage()).isEqualTo("MESSAGE");
