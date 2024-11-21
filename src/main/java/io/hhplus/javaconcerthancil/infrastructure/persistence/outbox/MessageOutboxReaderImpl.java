@@ -19,6 +19,11 @@ public class MessageOutboxReaderImpl implements MessageOutboxReader {
 
 
     @Override
+    public List<MessageOutbox> findAllBy(String topic, EventType eventType) {
+        return messageOutboxJpaRepository.findAllByTopicAndEventType(topic, eventType);
+    }
+
+    @Override
     public MessageOutbox findById(Long id) {
         return messageOutboxJpaRepository.findById(id).orElseThrow(
                 () -> new ApiException(ErrorCode.E404, LogLevel.INFO, "MessageOutbox not found messageOutboxId = " + id)
