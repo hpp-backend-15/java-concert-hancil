@@ -5,7 +5,7 @@ import io.hhplus.javaconcerthancil.domain.concert.SeatRepository;
 import io.hhplus.javaconcerthancil.domain.concert.SeatStatus;
 import io.hhplus.javaconcerthancil.domain.payments.Payment;
 import io.hhplus.javaconcerthancil.domain.payments.PaymentsService;
-import io.hhplus.javaconcerthancil.interfaces.external.payments.dto.PaymentSuccessEvent;
+import io.hhplus.javaconcerthancil.interfaces.event.payment.dto.PaymentSuccessEvent;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationItemRepository;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationRepository;
 import io.hhplus.javaconcerthancil.domain.reservation.ReservationStatus;

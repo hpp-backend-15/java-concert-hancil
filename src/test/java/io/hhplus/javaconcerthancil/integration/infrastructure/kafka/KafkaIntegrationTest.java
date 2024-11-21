@@ -28,7 +28,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.fail;
 public class KafkaIntegrationTest {
 
     @Autowired
-    private KafkaTemplate<String, ProducerDTO> kafkaTemplate;
+    private KafkaTemplate<String, ProducerDTO> kafkaTestTemplate;
     private KafkaConsumer<String, ProducerDTO> kafkaConsumer;
 
     private final ProducerDTO producerDto = new ProducerDTO("ConcertPayment","1", "test message");
@@ -36,7 +36,7 @@ public class KafkaIntegrationTest {
     @BeforeEach
     void setUp() {
         KafkaConsumerConfig config = new KafkaConsumerConfig();
-        this.kafkaConsumer = (KafkaConsumer<String, ProducerDTO>) config.paymentConsumerFactory().getConsumerFactory().createConsumer();
+        this.kafkaConsumer = (KafkaConsumer<String, ProducerDTO>) config.testConsumerFactory().getConsumerFactory().createConsumer();
     }
 
     @Test
@@ -50,7 +50,7 @@ public class KafkaIntegrationTest {
                     .setHeader(KafkaHeaders.KEY, producerDto.getKey())
                     .build();
 
-            CompletableFuture<SendResult<String, ProducerDTO>> future = kafkaTemplate.send(message);
+            CompletableFuture<SendResult<String, ProducerDTO>> future = kafkaTestTemplate.send(message);
 
             SendResult<String, ProducerDTO> sendResult = future.get(); // 비동기 결과를 동기적으로 대기
             assertThat(sendResult.getRecordMetadata()).isNotNull();
