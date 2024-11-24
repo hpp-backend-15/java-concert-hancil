@@ -1,4 +1,4 @@
-package io.hhplus.javaconcerthancil.integration.infrastructure;
+package io.hhplus.javaconcerthancil.integration.infrastructure.redis;
 
 import io.hhplus.javaconcerthancil.infrastructure.persistence.concert.ConcertScheduleRedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;

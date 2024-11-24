@@ -1,6 +1,7 @@
 package io.hhplus.javaconcerthancil.integration.domain.user;
 
 import io.hhplus.javaconcerthancil.domain.user.*;
+import io.hhplus.javaconcerthancil.infrastructure.persistence.user.UserJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class UserRepositoryTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userRepository;
 
     @Autowired
     private BalanceHistoryRepository balanceHistoryRepository;

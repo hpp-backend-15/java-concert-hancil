@@ -62,10 +62,10 @@ public class UserBalanceChargeIntegrationTest {
         latch.await(); // 모든 스레드가 완료될 때까지 대기
 
         // 최종 잔액 확인
-        User user1 = userRepository.findById(1L).orElseThrow();
-        User user2 = userRepository.findById(2L).orElseThrow();
-        User user3 = userRepository.findById(3L).orElseThrow();
-        User user4 = userRepository.findById(4L).orElseThrow();
+        User user1 = userRepository.findById(1L);
+        User user2 = userRepository.findById(2L);
+        User user3 = userRepository.findById(3L);
+        User user4 = userRepository.findById(4L);
         assertThat(user1.getBalance()).isNotEqualTo(5*1000);
         assertThat(user2.getBalance()).isNotEqualTo(2*1000);
         assertThat(user3.getBalance()).isNotEqualTo(2*1000);
