@@ -1,6 +1,6 @@
 package io.hhplus.javaconcerthancil.domain.payments;
 
-import io.hhplus.javaconcerthancil.interfaces.external.payments.dto.PaymentSuccessEvent;
+import io.hhplus.javaconcerthancil.interfaces.event.payment.dto.PaymentSuccessEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Repository;
