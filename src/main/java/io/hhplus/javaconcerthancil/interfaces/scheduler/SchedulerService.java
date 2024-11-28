@@ -74,7 +74,7 @@ public class SchedulerService {
     }
 
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 100)
     public void enteringUserQueueWithRedis() {
         waitingQueueService.periodicallyEnterWaitingQueue();
     }
